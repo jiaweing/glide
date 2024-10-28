@@ -1,8 +1,21 @@
-# Requirements
+# Automated Rapid Shuttle (ARS) Booking App
 
-### You need to download [Node.js](https://nodejs.org/en) and [PostgreSQL](https://www.postgresql.org/download/)
+This is the codebase for the fully working prototype of our shuttle bus booking app built for SIT students at SIT Punggol campus.
 
-# Development
+### Tech Stack
+
+- [Next.js (React)](https://nextjs.org/)
+- [PostgreSQL](https://www.postgresql.org/download/)
+- [Lucia Auth](https://lucia-auth.com/)
+- [Tailwind](https://tailwindcss.com/)
+- [shadcn/ui](https://ui.shadcn.com/)
+- [lucide-react icons](https://lucide.dev/icons/)
+
+## Requirements
+
+#### You need to download [Node.js](https://nodejs.org/en) and [PostgreSQL](https://www.postgresql.org/download/) to get started.
+
+## Development
 
 ### Install
 
@@ -32,7 +45,7 @@ pnpm db:migrate
 pnpm dev
 ```
 
-### Account Registration
+## Account Registration
 
 [Sign up](http://localhost:3000/signup) as a new user on the site UI and look for the OTP code in the console logs.
 
