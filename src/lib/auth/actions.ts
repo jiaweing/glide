@@ -2,27 +2,27 @@
 
 /* eslint @typescript-eslint/no-explicit-any:0, @typescript-eslint/prefer-optional-chain:0 */
 
-import { z } from "zod";
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
-import { generateId, Scrypt } from "lucia";
-import { isWithinExpirationDate, TimeSpan, createDate } from "oslo";
-import { generateRandomString, alphabet } from "oslo/crypto";
-import { eq } from "drizzle-orm";
+import { env } from "@/env";
 import { lucia } from "@/lib/auth";
-import { db } from "@/server/db";
+import { validateRequest } from "@/lib/auth/validate-request";
+import { EmailTemplate, sendMail } from "@/lib/email";
 import {
   loginSchema,
+  resetPasswordSchema,
   signupSchema,
   type LoginInput,
   type SignupInput,
-  resetPasswordSchema,
 } from "@/lib/validators/auth";
+import { db } from "@/server/db";
 import { emailVerificationCodes, passwordResetTokens, users } from "@/server/db/schema";
-import { sendMail, EmailTemplate } from "@/lib/email";
-import { validateRequest } from "@/lib/auth/validate-request";
+import { eq } from "drizzle-orm";
+import { generateId, Scrypt } from "lucia";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { createDate, isWithinExpirationDate, TimeSpan } from "oslo";
+import { alphabet, generateRandomString } from "oslo/crypto";
+import { z } from "zod";
 import { Paths } from "../constants";
-import { env } from "@/env";
 
 export interface ActionResponse<T> {
   fieldError?: Partial<Record<keyof T, string | undefined>>;
@@ -122,7 +122,7 @@ export async function logout(): Promise<{ error: string } | void> {
   await lucia.invalidateSession(session.id);
   const sessionCookie = lucia.createBlankSessionCookie();
   cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
-  return redirect("/");
+  return redirect("/login");
 }
 
 export async function resendVerificationEmail(): Promise<{

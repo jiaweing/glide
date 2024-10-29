@@ -49,13 +49,10 @@ export const UserDropdown = ({
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem className="cursor-pointer text-muted-foreground" asChild>
-            <Link href="/dashboard">Dashboard</Link>
+            <Link href="/">Home</Link>
           </DropdownMenuItem>
           <DropdownMenuItem className="cursor-pointer text-muted-foreground" asChild>
-            <Link href="/dashboard/billing">Billing</Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem className="cursor-pointer text-muted-foreground" asChild>
-            <Link href="/dashboard/settings">Settings</Link>
+            <Link href="/settings">Settings</Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
@@ -100,7 +97,7 @@ const SignoutConfirmation = () => {
       <AlertDialogContent className="max-w-xs">
         <AlertDialogHeader>
           <AlertDialogTitle className="text-center">Sign out from {APP_TITLE}?</AlertDialogTitle>
-          <AlertDialogDescription>You will be redirected to the home page.</AlertDialogDescription>
+          <AlertDialogDescription>You will be redirected to the login page.</AlertDialogDescription>
         </AlertDialogHeader>
         <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-center">
           <Button variant="outline" onClick={() => setOpen(false)}>

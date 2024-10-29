@@ -1,17 +1,17 @@
 "use client";
 
-import { useEffect } from "react";
-import { useFormState } from "react-dom";
+import { ExclamationTriangleIcon } from "@/components/icons";
+import { SubmitButton } from "@/components/submit-button";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { sendPasswordResetLink } from "@/lib/auth/actions";
+import { Paths } from "@/lib/constants";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { useFormState } from "react-dom";
 import { toast } from "sonner";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { SubmitButton } from "@/components/submit-button";
-import { sendPasswordResetLink } from "@/lib/auth/actions";
-import { ExclamationTriangleIcon } from "@/components/icons";
-import { Paths } from "@/lib/constants";
 
 export function SendResetEmail() {
   const [state, formAction] = useFormState(sendPasswordResetLink, null);
@@ -45,7 +45,7 @@ export function SendResetEmail() {
       <div className="flex flex-wrap justify-between">
         <Link href={Paths.Signup}>
           <Button variant={"link"} size={"sm"} className="p-0">
-            Not signed up? Sign up now
+            I want to register an account
           </Button>
         </Link>
       </div>

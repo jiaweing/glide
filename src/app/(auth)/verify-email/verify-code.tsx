@@ -1,12 +1,12 @@
 "use client";
+import { ExclamationTriangleIcon } from "@/components/icons";
+import { SubmitButton } from "@/components/submit-button";
 import { Input } from "@/components/ui/input";
+import { logout, resendVerificationEmail as resendEmail, verifyEmail } from "@/lib/auth/actions";
 import { Label } from "@radix-ui/react-label";
 import { useEffect, useRef } from "react";
 import { useFormState } from "react-dom";
 import { toast } from "sonner";
-import { ExclamationTriangleIcon } from "@/components/icons";
-import { logout, verifyEmail, resendVerificationEmail as resendEmail } from "@/lib/auth/actions";
-import { SubmitButton } from "@/components/submit-button";
 
 export const VerifyCode = () => {
   const [verifyEmailState, verifyEmailAction] = useFormState(verifyEmail, null);
@@ -48,7 +48,7 @@ export const VerifyCode = () => {
       </form>
       <form action={logout}>
         <SubmitButton variant="link" className="p-0 font-normal">
-          want to use another email? Log out now.
+          Different email?
         </SubmitButton>
       </form>
     </div>

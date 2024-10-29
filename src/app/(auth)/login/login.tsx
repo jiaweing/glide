@@ -1,45 +1,32 @@
 "use client";
 
+import { PasswordInput } from "@/components/password-input";
+import { SubmitButton } from "@/components/submit-button";
+import { Button } from "@/components/ui/button";
+import { CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { login } from "@/lib/auth/actions";
 import Link from "next/link";
 import { useFormState } from "react-dom";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { PasswordInput } from "@/components/password-input";
-import { DiscordLogoIcon } from "@/components/icons";
-import { APP_TITLE } from "@/lib/constants";
-import { login } from "@/lib/auth/actions";
-import { Label } from "@/components/ui/label";
-import { SubmitButton } from "@/components/submit-button";
 
 export function Login() {
   const [state, formAction] = useFormState(login, null);
 
   return (
-    <Card className="w-full max-w-md">
-      <CardHeader className="text-center">
-        <CardTitle>{APP_TITLE} Log In</CardTitle>
-        <CardDescription>Log in to your account to access your dashboard</CardDescription>
+    <div className="w-full">
+      <CardHeader>
+        <CardTitle>Log In</CardTitle>
+        <CardDescription>Use your school email to sign in</CardDescription>
       </CardHeader>
       <CardContent>
-        <Button variant="outline" className="w-full" asChild>
-          <Link href="/login/discord" prefetch={false}>
-            <DiscordLogoIcon className="mr-2 h-5 w-5" />
-            Log in with Discord
-          </Link>
-        </Button>
-        <div className="my-2 flex items-center">
-          <div className="flex-grow border-t border-muted" />
-          <div className="mx-2 text-muted-foreground">or</div>
-          <div className="flex-grow border-t border-muted" />
-        </div>
         <form action={formAction} className="grid gap-4">
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">School Email</Label>
             <Input
               required
               id="email"
-              placeholder="email@example.com"
+              placeholder="2301008@sit.singaporetech.edu.sg"
               autoComplete="email"
               name="email"
               type="email"
@@ -59,7 +46,7 @@ export function Login() {
 
           <div className="flex flex-wrap justify-between">
             <Button variant={"link"} size={"sm"} className="p-0" asChild>
-              <Link href={"/signup"}>Not signed up? Sign up now.</Link>
+              <Link href={"/signup"}>I want to register an account</Link>
             </Button>
             <Button variant={"link"} size={"sm"} className="p-0" asChild>
               <Link href={"/reset-password"}>Forgot password?</Link>
@@ -87,6 +74,6 @@ export function Login() {
           </Button>
         </form>
       </CardContent>
-    </Card>
+    </div>
   );
 }

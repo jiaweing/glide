@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Clock, MapPin, Search } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 
 interface Route {
@@ -68,25 +69,27 @@ export default function HomePage({ user }: { user: { email: string } }) {
               { pickup: "SIT PUNGGOL CAMPUS E6", dropoff: "PUNGGOL INTERCHANGE" },
             ].map((route, index) => (
               <Card key={index}>
-                <CardContent className="p-4">
-                  <div className="flex items-start space-x-4">
-                    <Clock className="mt-1 h-5 w-5 text-gray-400" />
-                    <div className="flex-1 space-y-2">
-                      <div>
-                        <p className="font-medium">PICK-UP:</p>
-                        <p className="text-sm text-gray-500">{route.pickup}</p>
+                <Link href="/pickup" key={index}>
+                  <CardContent className="p-4">
+                    <div className="flex items-start space-x-4">
+                      <Clock className="mt-1 h-5 w-5 text-gray-400" />
+                      <div className="flex-1 space-y-2">
+                        <div>
+                          <p className="font-medium">PICK-UP:</p>
+                          <p className="text-sm text-gray-500">{route.pickup}</p>
+                        </div>
+                        <div>
+                          <p className="font-medium">DROP-OFF:</p>
+                          <p className="text-sm text-gray-500">{route.dropoff}</p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="font-medium">DROP-OFF:</p>
-                        <p className="text-sm text-gray-500">{route.dropoff}</p>
-                      </div>
+                      <Button variant="ghost" size="icon">
+                        <MapPin className="h-5 w-5" />
+                        <span className="sr-only">View on map</span>
+                      </Button>
                     </div>
-                    <Button variant="ghost" size="icon">
-                      <MapPin className="h-5 w-5" />
-                      <span className="sr-only">View on map</span>
-                    </Button>
-                  </div>
-                </CardContent>
+                  </CardContent>
+                </Link>
               </Card>
             ))}
           </div>

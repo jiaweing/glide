@@ -1,7 +1,7 @@
 import { freePlan, proPlan, subscriptionPlans } from "@/config/subscriptions";
-import type { ProtectedTRPCContext } from "../../trpc";
 import { stripe } from "@/lib/stripe";
 import { absoluteUrl, formatPrice } from "@/lib/utils";
+import type { ProtectedTRPCContext } from "../../trpc";
 import type { ManageSubscriptionInput } from "./stripe.input";
 
 export const getStripePlans = async (ctx: ProtectedTRPCContext) => {
@@ -84,7 +84,7 @@ export const manageSubscription = async (
   ctx: ProtectedTRPCContext,
   input: ManageSubscriptionInput,
 ) => {
-  const billingUrl = absoluteUrl("/dashboard/billing");
+  const billingUrl = absoluteUrl("/billing");
 
   const user = await ctx.db.query.users.findFirst({
     where: (table, { eq }) => eq(table.id, ctx.user.id),

@@ -65,7 +65,7 @@ export async function Billing({ stripePromises }: BillingProps) {
             <CardFooter className="pt-4">
               {item.name === "Free" ? (
                 <Button className="w-full" asChild>
-                  <Link href="/dashboard">
+                  <Link href="/">
                     Get started
                     <span className="sr-only">Get started</span>
                   </Link>

@@ -1,46 +1,32 @@
 "use client";
 
-import { useFormState } from "react-dom";
-import Link from "next/link";
 import { PasswordInput } from "@/components/password-input";
+import { SubmitButton } from "@/components/submit-button";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { DiscordLogoIcon } from "@/components/icons";
-import { APP_TITLE } from "@/lib/constants";
 import { Label } from "@/components/ui/label";
 import { signup } from "@/lib/auth/actions";
-import { SubmitButton } from "@/components/submit-button";
+import Link from "next/link";
+import { useFormState } from "react-dom";
 
 export function Signup() {
   const [state, formAction] = useFormState(signup, null);
 
   return (
-    <Card className="w-full max-w-md">
-      <CardHeader className="text-center">
-        <CardTitle>{APP_TITLE} Sign Up</CardTitle>
-        <CardDescription>Sign up to start using the app</CardDescription>
+    <div className="w-full">
+      <CardHeader>
+        <CardTitle>Sign Up</CardTitle>
+        <CardDescription>Sign up to start booking shuttle buses</CardDescription>
       </CardHeader>
       <CardContent>
-        <Button variant="outline" className="w-full" asChild>
-          <Link href="/login/discord" prefetch={false}>
-            <DiscordLogoIcon className="mr-2 h-5 w-5" />
-            Sign up with Discord
-          </Link>
-        </Button>
-        <div className="my-2 flex items-center">
-          <div className="flex-grow border-t border-muted" />
-          <div className="mx-2 text-muted-foreground">or</div>
-          <div className="flex-grow border-t border-muted" />
-        </div>
-
         <form action={formAction} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">School Email</Label>
             <Input
               id="email"
               required
-              placeholder="email@example.com"
+              placeholder="2301008@sit.singaporetech.edu.sg"
               autoComplete="email"
               name="email"
               type="email"
@@ -73,7 +59,7 @@ export function Signup() {
           <div>
             <Link href={"/login"}>
               <span className="p-0 text-xs font-medium underline-offset-4 hover:underline">
-                Already signed up? Login instead.
+                I want to login instead
               </span>
             </Link>
           </div>
@@ -86,6 +72,6 @@ export function Signup() {
           </Button>
         </form>
       </CardContent>
-    </Card>
+    </div>
   );
 }
