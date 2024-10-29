@@ -5,7 +5,7 @@ const MainLayout = ({ children }: { children: ReactNode }) => {
   return (
     <div className="mx-auto min-h-screen max-w-screen-sm border-x">
       <Header />
-      {children}
+      <div className="p-6">{children}</div>
     </div>
   );
 };

@@ -26,7 +26,7 @@ export default function HomePage({ user }: { user: { email: string } }) {
   return (
     <>
       <div className="">
-        <div className="space-y-6 p-6">
+        <div className="space-y-6">
           <header className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-semibold">Welcome {user.email}</h1>

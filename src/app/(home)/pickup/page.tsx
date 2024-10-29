@@ -1,19 +1,22 @@
 import { Button } from "@/components/ui/button";
-import { CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Edit, MapPin } from "lucide-react";
 
 export default function BusPickupScreen() {
   return (
-    <div>
-      <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="text-lg font-bold">PICK-UP</CardTitle>
+    <div className="h-screen">
+      <CardHeader className="flex flex-row items-center justify-between rounded-lg border">
+        <div>
+          <CardTitle className="text-lg font-bold">PICK-UP</CardTitle>
+          <p className="text-sm text-muted-foreground">Select Pick-Up point</p>
+        </div>
         <Button variant="ghost" size="icon">
           <Edit className="h-4 w-4" />
           <span className="sr-only">Edit</span>
         </Button>
       </CardHeader>
-      <CardContent className="space-y-2">
-        <p className="text-sm text-muted-foreground">Select Pick-Up point</p>
+      <div className="mt-4 space-y-2">
+        <p className="text-sm text-muted-foreground">Nearby</p>
         <div className="space-y-1">
           {["PUNGGOL INTERCHANGE", "NTU PUNGGOL CAMPUS MAIN ENTRANCE", "NTU PUNGGOL CAMPUS E4"].map(
             (location) => (
@@ -46,8 +49,8 @@ export default function BusPickupScreen() {
             }}
           />
         </div>
-      </CardContent>
-      <CardFooter className="mx-6 mt-auto flex h-20 items-center justify-center rounded-3xl border p-0">
+      </div>
+      <CardFooter className="mt-4 flex h-20 items-center justify-center rounded-3xl border p-0">
         <p className="text-sm font-medium">Next bus leaving campus in 9 minutes</p>
       </CardFooter>
     </div>
