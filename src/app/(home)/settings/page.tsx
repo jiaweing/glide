@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 
 import { env } from "@/env";
 import { validateRequest } from "@/lib/auth/validate-request";
+import { Settings } from "./settings";
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -10,20 +11,12 @@ export const metadata: Metadata = {
   description: "Manage your settings",
 };
 
-export default async function BillingPage() {
+export default async function SettingsPage() {
   const { user } = await validateRequest();
 
   if (!user) {
     redirect("/signin");
   }
 
-  return (
-    <div className="grid gap-8">
-      <div>
-        <h1 className="text-3xl font-bold md:text-4xl">Settings</h1>
-        <p className="text-sm text-muted-foreground">Manage your account settings</p>
-      </div>
-      <p>Work in progress...</p>
-    </div>
-  );
+  return <Settings user={user} />;
 }

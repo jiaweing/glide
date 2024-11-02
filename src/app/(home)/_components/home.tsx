@@ -63,7 +63,7 @@ export default function HomePage({ user }: { user: { email: string } }) {
     if (userLocation) {
       const interval = setInterval(() => {
         setBusLocations(generateRandomBusLocations(userLocation, 3));
-      }, 10000);
+      }, 3000);
 
       return () => clearInterval(interval);
     }
@@ -102,7 +102,7 @@ export default function HomePage({ user }: { user: { email: string } }) {
           <header className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-semibold">Welcome {user.email}</h1>
-              <p className="text-gray-500">Book a shuttle bus with {APP_TITLE}</p>
+              <p className="text-muted-foreground">Book a shuttle bus with {APP_TITLE}</p>
             </div>
           </header>
 
@@ -135,7 +135,7 @@ export default function HomePage({ user }: { user: { email: string } }) {
 
           <div className="space-y-4">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 transform text-gray-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 transform text-muted-foreground" />
               <Input
                 type="text"
                 placeholder="Search Destinations"
@@ -164,15 +164,15 @@ export default function HomePage({ user }: { user: { email: string } }) {
                 <Link href="/pickup" key={index}>
                   <CardContent className="p-4">
                     <div className="flex items-start space-x-4">
-                      <Clock className="mt-1 h-5 w-5 text-gray-400" />
+                      <Clock className="mt-1 h-5 w-5 text-muted-foreground" />
                       <div className="flex-1 space-y-2">
                         <div>
                           <p className="font-medium">PICK-UP:</p>
-                          <p className="text-sm text-gray-500">{route.pickup}</p>
+                          <p className="text-sm text-muted-foreground">{route.pickup}</p>
                         </div>
                         <div>
                           <p className="font-medium">DROP-OFF:</p>
-                          <p className="text-sm text-gray-500">{route.dropoff}</p>
+                          <p className="text-sm text-muted-foreground">{route.dropoff}</p>
                         </div>
                       </div>
                       <Button variant="ghost" size="icon">
