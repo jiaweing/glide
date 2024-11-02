@@ -3,9 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { APP_TITLE } from "@/lib/constants";
-import { Bus, Clock, MapPin, Search } from "lucide-react";
+import { Icon, type LatLngExpression, type LatLngTuple } from "leaflet";
+import "leaflet/dist/leaflet.css";
+import { Clock, MapPin, Search } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 
 interface Route {
   pickup: string;
@@ -13,14 +16,14 @@ interface Route {
 }
 
 interface BusLocation {
-  x: number;
-  y: number;
+  lat: number;
+  lng: number;
 }
 
-const generateRandomBusLocations = (count: number): BusLocation[] => {
+const generateRandomBusLocations = (center: LatLngTuple, count: number): BusLocation[] => {
   return Array.from({ length: count }, () => ({
-    x: Math.random() * 100,
-    y: Math.random() * 100,
+    lat: center[0] + (Math.random() - 0.5) * 0.01,
+    lng: center[1] + (Math.random() - 0.5) * 0.01,
   }));
 };
 
@@ -33,17 +36,27 @@ export default function HomePage({ user }: { user: { email: string } }) {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [busLocations, setBusLocations] = useState<BusLocation[]>([]);
+  const [userLocation, setUserLocation] = useState<LatLngTuple | null>(null);
 
   useEffect(() => {
-    const updateBusLocations = () => {
-      setBusLocations(generateRandomBusLocations(3));
-    };
-
-    updateBusLocations();
-    const interval = setInterval(updateBusLocations, 5000);
-
-    return () => clearInterval(interval);
+    if (typeof window !== "undefined" && "geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        const { latitude, longitude } = position.coords;
+        setUserLocation([latitude, longitude]);
+        setBusLocations(generateRandomBusLocations([latitude, longitude], 3));
+      });
+    }
   }, []);
+
+  useEffect(() => {
+    if (userLocation) {
+      const interval = setInterval(() => {
+        setBusLocations(generateRandomBusLocations(userLocation, 3));
+      }, 5000);
+
+      return () => clearInterval(interval);
+    }
+  }, [userLocation]);
 
   const filteredRoutes = useMemo(() => {
     return recentRoutes.filter(
@@ -57,6 +70,13 @@ export default function HomePage({ user }: { user: { email: string } }) {
     setSearchQuery(e.target.value);
   };
 
+  const busIcon = new Icon({
+    iconUrl: "https://cdn-icons-png.flaticon.com/512/3448/3448339.png",
+    iconSize: [25, 25],
+    iconAnchor: [12, 12],
+    popupAnchor: [0, -12],
+  });
+
   return (
     <>
       <div className="">
@@ -68,21 +88,28 @@ export default function HomePage({ user }: { user: { email: string } }) {
             </div>
           </header>
 
-          <div className="relative h-40 rounded-xl bg-gray-100 p-4">
-            {busLocations.map((location, index) => (
-              <Bus
-                key={index}
-                className="absolute h-5 w-5 text-blue-500"
-                style={{
-                  left: `${location.x}%`,
-                  top: `${location.y}%`,
-                  transform: "translate(-50%, -50%)",
-                }}
-              />
-            ))}
-            <div className="absolute bottom-2 left-2 rounded-full bg-white px-2 py-1 text-xs font-medium">
-              Current Buses
-            </div>
+          <div className="h-[200px] overflow-hidden rounded-xl">
+            {userLocation && (
+              <MapContainer
+                center={userLocation}
+                zoom={15}
+                style={{ height: "100%", width: "100%" }}
+              >
+                <TileLayer
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                />
+                {busLocations.map((location, index) => (
+                  <Marker
+                    key={index}
+                    position={[location.lat, location.lng] as LatLngExpression}
+                    icon={busIcon}
+                  >
+                    <Popup>Bus {index + 1}</Popup>
+                  </Marker>
+                ))}
+              </MapContainer>
+            )}
           </div>
 
           <div className="space-y-4">
