@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { APP_TITLE } from "@/lib/constants";
-import { Icon, type LatLngExpression, type LatLngTuple } from "leaflet";
+import { Icon, type LatLngTuple } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { Clock, MapPin, Search } from "lucide-react";
 import Link from "next/link";
@@ -27,6 +27,18 @@ const generateRandomBusLocations = (center: LatLngTuple, count: number): BusLoca
   }));
 };
 
+const generateRandomBusPlate = (): string => {
+  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const numbers = "0123456789";
+  const randomLetters = Array.from({ length: 3 }, () =>
+    letters.charAt(Math.floor(Math.random() * letters.length)),
+  ).join("");
+  const randomNumbers = Array.from({ length: 4 }, () =>
+    numbers.charAt(Math.floor(Math.random() * numbers.length)),
+  ).join("");
+  return `${randomLetters}${randomNumbers}`;
+};
+
 export default function HomePage({ user }: { user: { email: string } }) {
   const [recentRoutes, setRecentRoutes] = useState<Route[]>([
     { pickup: "PUNGGOL INTERCHANGE", dropoff: "SIT PUNGGOL CAMPUS E2" },
@@ -43,7 +55,6 @@ export default function HomePage({ user }: { user: { email: string } }) {
       navigator.geolocation.getCurrentPosition((position) => {
         const { latitude, longitude } = position.coords;
         setUserLocation([latitude, longitude]);
-        setBusLocations(generateRandomBusLocations([latitude, longitude], 3));
       });
     }
   }, []);
@@ -88,7 +99,7 @@ export default function HomePage({ user }: { user: { email: string } }) {
             </div>
           </header>
 
-          <div className="h-[200px] overflow-hidden rounded-xl">
+          <div className="h-[400px] overflow-hidden rounded-xl">
             {userLocation && (
               <MapContainer
                 center={userLocation}
@@ -99,13 +110,16 @@ export default function HomePage({ user }: { user: { email: string } }) {
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 />
-                {busLocations.map((location, index) => (
+                <Marker position={userLocation}>
+                  <Popup>Your Location</Popup>
+                </Marker>
+                {busLocations.map((location) => (
                   <Marker
-                    key={index}
-                    position={[location.lat, location.lng] as LatLngExpression}
+                    key={location.lat + location.lng}
+                    position={[location.lat, location.lng] as LatLngTuple}
                     icon={busIcon}
                   >
-                    <Popup>Bus {index + 1}</Popup>
+                    <Popup>{generateRandomBusPlate()}</Popup>
                   </Marker>
                 ))}
               </MapContainer>
