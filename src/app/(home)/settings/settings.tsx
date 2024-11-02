@@ -64,7 +64,7 @@ export function Settings({ user }: { user: { email: string } }) {
                 <ChevronRight className="h-4 w-4 text-muted-foreground" />
               </Link>
               <Link
-                href="#"
+                href="/help"
                 className="flex items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors hover:bg-muted"
               >
                 Help Center (FAQ)

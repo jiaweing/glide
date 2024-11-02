@@ -1,6 +1,8 @@
-# Automated Rapid Shuttle (ARS) Booking App
+# Glide Mobile App
 
-This is the codebase for the fully working prototype of our shuttle bus booking app built for SIT students at SIT Punggol campus.
+This is a working prototype of an on-demand autonomous shuttle bus booking app built for SIT students at the SIT Punggol campus.
+
+Built for INF2002 module.
 
 ### Tech Stack
 
