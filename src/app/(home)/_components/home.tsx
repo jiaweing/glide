@@ -63,7 +63,7 @@ export default function HomePage({ user }: { user: { email: string } }) {
     if (userLocation) {
       const interval = setInterval(() => {
         setBusLocations(generateRandomBusLocations(userLocation, 3));
-      }, 5000);
+      }, 10000);
 
       return () => clearInterval(interval);
     }
@@ -88,6 +88,13 @@ export default function HomePage({ user }: { user: { email: string } }) {
     popupAnchor: [0, -12],
   });
 
+  const userIcon = new Icon({
+    iconUrl: "https://cdn-icons-png.flaticon.com/512/3177/3177440.png", // You can use a different icon URL for the user location if desired
+    iconSize: [30, 30],
+    iconAnchor: [15, 15],
+    popupAnchor: [0, -15],
+  });
+
   return (
     <>
       <div className="">
@@ -99,7 +106,7 @@ export default function HomePage({ user }: { user: { email: string } }) {
             </div>
           </header>
 
-          <div className="h-[400px] overflow-hidden rounded-xl">
+          <div className="relative z-10 h-[250px] overflow-hidden rounded-xl">
             {userLocation && (
               <MapContainer
                 center={userLocation}
@@ -110,7 +117,7 @@ export default function HomePage({ user }: { user: { email: string } }) {
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 />
-                <Marker position={userLocation}>
+                <Marker position={userLocation} icon={userIcon}>
                   <Popup>Your Location</Popup>
                 </Marker>
                 {busLocations.map((location) => (
@@ -131,7 +138,7 @@ export default function HomePage({ user }: { user: { email: string } }) {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 transform text-gray-400" />
               <Input
                 type="text"
-                placeholder="Search Pick Up Points"
+                placeholder="Search Destinations"
                 className="pl-10"
                 value={searchQuery}
                 onChange={handleSearch}
