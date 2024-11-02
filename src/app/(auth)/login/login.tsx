@@ -56,8 +56,8 @@ export function Login() {
           {state?.fieldError ? (
             <ul className="list-disc space-y-1 rounded-lg border bg-destructive/10 p-2 text-[0.8rem] font-medium text-destructive">
               {Object.values(state.fieldError).map((err) => (
-                <li className="ml-4" key={err}>
-                  {err}
+                <li className="ml-4" key={String(err)}>
+                  {String(err)}
                 </li>
               ))}
             </ul>

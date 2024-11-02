@@ -1,14 +1,15 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 "use client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { APP_TITLE } from "@/lib/constants";
-import { Icon, type LatLngTuple } from "leaflet";
+import { type LatLngTuple } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { Clock, MapPin, Search, Star } from "lucide-react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 
 interface Route {
   pickup: string;
@@ -81,18 +82,8 @@ export default function HomePage({ user }: { user: { email: string } }) {
     setSearchQuery(e.target.value);
   };
 
-  const busIcon = new Icon({
-    iconUrl: "https://cdn-icons-png.flaticon.com/512/3448/3448339.png",
-    iconSize: [25, 25],
-    iconAnchor: [12, 12],
-    popupAnchor: [0, -12],
-  });
-
-  const userIcon = new Icon({
-    iconUrl: "https://cdn-icons-png.flaticon.com/512/3177/3177440.png", // You can use a different icon URL for the user location if desired
-    iconSize: [30, 30],
-    iconAnchor: [15, 15],
-    popupAnchor: [0, -15],
+  const MapWithNoSSR = dynamic(() => import("./map-container"), {
+    ssr: false,
   });
 
   return (
@@ -108,28 +99,11 @@ export default function HomePage({ user }: { user: { email: string } }) {
 
           <div className="relative z-10 h-[250px] overflow-hidden rounded-xl">
             {userLocation && (
-              <MapContainer
-                center={userLocation}
-                zoom={15}
-                style={{ height: "100%", width: "100%" }}
-              >
-                <TileLayer
-                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                />
-                <Marker position={userLocation} icon={userIcon}>
-                  <Popup>Your Location</Popup>
-                </Marker>
-                {busLocations.map((location) => (
-                  <Marker
-                    key={location.lat + location.lng}
-                    position={[location.lat, location.lng] as LatLngTuple}
-                    icon={busIcon}
-                  >
-                    <Popup>{generateRandomBusPlate()}</Popup>
-                  </Marker>
-                ))}
-              </MapContainer>
+              <MapWithNoSSR
+                userLocation={userLocation}
+                busLocations={busLocations}
+                generateRandomBusPlate={generateRandomBusPlate}
+              />
             )}
           </div>
 
