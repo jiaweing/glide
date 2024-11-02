@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { APP_TITLE } from "@/lib/constants";
 import { Icon, type LatLngTuple } from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { Clock, MapPin, Search } from "lucide-react";
+import { Clock, MapPin, Search, Star } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
@@ -147,13 +147,13 @@ export default function HomePage({ user }: { user: { email: string } }) {
 
             <div className="flex space-x-2">
               <Button variant="outline" size="sm">
-                Fav 1
+                <Star className="text-yellow-400" /> E4
               </Button>
               <Button variant="outline" size="sm">
-                Fav 2
+                <Star className="text-yellow-400" /> E6
               </Button>
               <Button variant="outline" size="sm">
-                Fav 3
+                <Star className="text-yellow-400" /> Punggol Int
               </Button>
             </div>
           </div>

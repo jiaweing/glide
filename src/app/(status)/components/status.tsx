@@ -2,6 +2,16 @@
 
 import { BackButton } from "@/app/(example)/_components/back-button";
 import { Help } from "@/app/(home)/_components/help";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { CardFooter } from "@/components/ui/card";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
@@ -106,6 +116,9 @@ export default function Status({ user }: { user: { email: string } }) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [rating, setRating] = useState(0);
+  const [hasChangedDropoff, setHasChangedDropoff] = useState(false);
+  const [showChangeAlert, setShowChangeAlert] = useState(false);
+  const [pendingDropoffChange, setPendingDropoffChange] = useState<string | null>(null);
   const router = useRouter();
 
   const updateETA = () => {
@@ -135,24 +148,59 @@ export default function Status({ user }: { user: { email: string } }) {
 
   const handleLocationSelect = (value: string, type: "pickup" | "dropoff") => {
     const location = locations.find((loc) => loc.name === value);
-    if (location) {
-      const newPosition: LatLngExpression = { lat: location.lat, lng: location.lng };
-      if (type === "pickup") {
-        if (dropoffPosition && JSON.stringify(newPosition) === JSON.stringify(dropoffPosition)) {
-          setErrorMessage("Pickup and dropoff locations cannot be the same");
-          return;
-        }
-        setPickupPosition(newPosition);
-        setPickupLocation(value);
-      } else {
-        if (pickupPosition && JSON.stringify(newPosition) === JSON.stringify(pickupPosition)) {
-          setErrorMessage("Pickup and dropoff locations cannot be the same");
-          return;
-        }
-        setDropoffPosition(newPosition);
-        setDropoffLocation(value);
+    if (!location) return;
+
+    const newPosition: LatLngExpression = { lat: location.lat, lng: location.lng };
+
+    if (type === "pickup") {
+      if (dropoffPosition && JSON.stringify(newPosition) === JSON.stringify(dropoffPosition)) {
+        setErrorMessage("Pickup and dropoff locations cannot be the same");
+        return;
       }
+      setPickupPosition(newPosition);
+      setPickupLocation(value);
       setErrorMessage(null);
+    } else {
+      if (pickupPosition && JSON.stringify(newPosition) === JSON.stringify(pickupPosition)) {
+        setErrorMessage("Pickup and dropoff locations cannot be the same");
+        return;
+      }
+
+      if (isBookingConfirmed) {
+        if (hasChangedDropoff) {
+          toast.error("You can only change the dropoff location once");
+          return;
+        }
+        setPendingDropoffChange(value);
+        setShowChangeAlert(true);
+        return;
+      }
+
+      setDropoffPosition(newPosition);
+      setDropoffLocation(value);
+      setErrorMessage(null);
+    }
+  };
+
+  const confirmDropoffChange = () => {
+    if (!pendingDropoffChange) return;
+
+    const location = locations.find((loc) => loc.name === pendingDropoffChange);
+    if (!location) return;
+
+    const newPosition: LatLngExpression = { lat: location.lat, lng: location.lng };
+    setDropoffPosition(newPosition);
+    setDropoffLocation(pendingDropoffChange);
+    setHasChangedDropoff(true);
+    setShowChangeAlert(false);
+    setPendingDropoffChange(null);
+    toast.success("Dropoff location updated successfully");
+
+    // Update simulation if in progress
+    if (showDestinationETA && busPosition) {
+      // Reset ETA based on new dropoff location
+      setDestinationETA(15);
+      setStatusMessage("You will arrive at " + pendingDropoffChange);
     }
   };
 
@@ -301,6 +349,7 @@ export default function Status({ user }: { user: { email: string } }) {
             <div className="flex w-full flex-col space-y-1">
               <span className="text-xs text-muted-foreground">Pickup</span>
               <Select
+                disabled={isBookingConfirmed}
                 onValueChange={(value: string) => handleLocationSelect(value, "pickup")}
                 value={pickupLocation ?? undefined}
               >
@@ -404,6 +453,29 @@ export default function Status({ user }: { user: { email: string } }) {
           </div>
         </div>
       </CardFooter>
+
+      <AlertDialog open={showChangeAlert} onOpenChange={setShowChangeAlert}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Change Dropoff Location</AlertDialogTitle>
+            <AlertDialogDescription>
+              You can only change the dropoff location once during your trip. Are you sure you want
+              to change it now?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel
+              onClick={() => {
+                setShowChangeAlert(false);
+                setPendingDropoffChange(null);
+              }}
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDropoffChange}>Continue</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       <Drawer
         open={isDrawerOpen}

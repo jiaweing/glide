@@ -112,9 +112,9 @@ const SignoutConfirmation = () => {
       <AlertDialogTrigger asChild>
         <Link
           href="#"
-          className="flex items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors hover:bg-muted"
+          className="flex items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors hover:bg-muted hover:text-destructive"
         >
-          Sign out
+          Sign Out
           <ChevronRight className="h-4 w-4 text-muted-foreground" />
         </Link>
       </AlertDialogTrigger>
