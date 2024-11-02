@@ -27,6 +27,20 @@ const locations: Location[] = [
   { name: "SIT PUNGGOL CAMPUS E4", lat: 1.412, lng: 103.91 },
 ];
 
+// Define map boundaries for random bus starting position
+const MAP_BOUNDS = {
+  minLat: 1.4,
+  maxLat: 1.415,
+  minLng: 103.9,
+  maxLng: 103.915,
+};
+
+const getRandomPosition = (): LatLngExpression => {
+  const lat = MAP_BOUNDS.minLat + Math.random() * (MAP_BOUNDS.maxLat - MAP_BOUNDS.minLat);
+  const lng = MAP_BOUNDS.minLng + Math.random() * (MAP_BOUNDS.maxLng - MAP_BOUNDS.minLng);
+  return [lat, lng];
+};
+
 const pickupIcon = new Icon({
   iconUrl:
     "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png",
@@ -82,6 +96,7 @@ export default function Status({ user }: { user: { email: string } }) {
   const [destinationETA, setDestinationETA] = useState(15);
   const [boardingTimeDisplay, setBoardingTimeDisplay] = useState(1);
   const [etaTime, setEtaTime] = useState<string>("");
+  const [initialBusPosition, setInitialBusPosition] = useState<LatLngExpression | null>(null);
 
   const updateETA = () => {
     const now = new Date();
@@ -141,24 +156,25 @@ export default function Status({ user }: { user: { email: string } }) {
   };
 
   const confirmBooking = () => {
+    const randomStart = getRandomPosition();
+    setInitialBusPosition(randomStart);
+    setBusPosition(randomStart);
     setIsBookingConfirmed(true);
-    setBusPosition(locations[0] ?? null);
     setStatusMessage("Your bus will arrive in");
-    simulateBusMovement();
+    simulateBusMovement(randomStart);
   };
 
-  const simulateBusMovement = () => {
+  const simulateBusMovement = (startPosition: LatLngExpression) => {
     let currentTime = timeRemaining;
     const interval = setInterval(() => {
       if (currentTime > 0) {
         currentTime--;
         setTimeRemaining(currentTime);
 
-        // Update bus position from interchange to pickup
+        // Update bus position from random start to pickup
         const progress = 1 - currentTime / 9;
-        if (pickupPosition) {
-          const startLat = locations[0]?.lat ?? 0;
-          const startLng = locations[0]?.lng ?? 0;
+        if (pickupPosition && Array.isArray(startPosition)) {
+          const [startLat, startLng] = startPosition;
           const endLat =
             typeof pickupPosition === "object" && "lat" in pickupPosition ? pickupPosition.lat : 0;
           const endLng =
