@@ -1,8 +1,24 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Edit, MapPin } from "lucide-react";
+import { useState } from "react";
 
 export default function BusPickupScreen() {
+  const [pinPositions, setPinPositions] = useState(generateRandomPinPositions());
+
+  function generateRandomPinPositions() {
+    return Array.from({ length: 1 }, () => ({
+      top: `${20 + Math.random() * 60}%`,
+      left: `${20 + Math.random() * 60}%`,
+    }));
+  }
+
+  function handleLocationClick() {
+    setPinPositions(generateRandomPinPositions());
+  }
+
   return (
     <div className="h-screen">
       <CardHeader className="flex flex-row items-center justify-between rounded-lg border">
@@ -20,7 +36,12 @@ export default function BusPickupScreen() {
         <div className="space-y-1">
           {["PUNGGOL INTERCHANGE", "NTU PUNGGOL CAMPUS MAIN ENTRANCE", "NTU PUNGGOL CAMPUS E4"].map(
             (location) => (
-              <Button key={location} variant="outline" className="w-full justify-start text-left">
+              <Button
+                key={location}
+                variant="outline"
+                className="w-full justify-start text-left"
+                onClick={handleLocationClick}
+              >
                 {location}
               </Button>
             ),
@@ -28,15 +49,15 @@ export default function BusPickupScreen() {
         </div>
         <div className="relative mt-4 aspect-video overflow-hidden rounded-lg bg-gray-200">
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-gray-400">Map View</span>
+            {/* <span className="text-gray-400">Map View</span> */}
           </div>
-          {[Array(5)].map((_, i) => (
+          {pinPositions.map((position, i) => (
             <MapPin
               key={i}
               className="absolute text-red-500"
               style={{
-                top: `${20 + Math.random() * 60}%`,
-                left: `${20 + Math.random() * 60}%`,
+                top: position.top,
+                left: position.left,
               }}
             />
           ))}

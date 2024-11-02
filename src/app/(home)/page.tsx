@@ -7,8 +7,8 @@ import HomePage from "./_components/home";
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
-  title: "Posts",
-  description: "Manage your posts here",
+  title: "Home",
+  description: "Manage your bookings here",
 };
 
 export default async function DashboardPage() {

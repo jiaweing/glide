@@ -6,8 +6,8 @@ import { validateRequest } from "@/lib/auth/validate-request";
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
-  title: "Billing",
-  description: "Manage your billing and subscription",
+  title: "Settings",
+  description: "Manage your settings",
 };
 
 export default async function BillingPage() {

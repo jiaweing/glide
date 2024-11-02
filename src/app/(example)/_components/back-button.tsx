@@ -1,10 +1,15 @@
 "use client";
 
 import { ArrowLeft } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
-export const BackButton = async () => {
+export const BackButton = () => {
   const router = useRouter();
+  const pathname = usePathname();
+
+  if (pathname === "/") {
+    return null;
+  }
 
   return (
     <ArrowLeft
