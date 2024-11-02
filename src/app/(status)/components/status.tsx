@@ -1,6 +1,7 @@
 "use client";
 
 import { BackButton } from "@/app/(example)/_components/back-button";
+import { Help } from "@/app/(home)/_components/help";
 import { Button } from "@/components/ui/button";
 import { CardFooter } from "@/components/ui/card";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
@@ -14,7 +15,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Icon, type LatLngExpression, type LeafletMouseEvent } from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { ArrowUpDown, Clock, MapPin, Star, X } from "lucide-react";
+import { AlertCircle, ArrowUpDown, Clock, MapPin, Star, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { MapContainer, Marker, Polyline, TileLayer, useMapEvents } from "react-leaflet";
@@ -103,6 +104,7 @@ export default function Status({ user }: { user: { email: string } }) {
   const [etaTime, setEtaTime] = useState<string>("");
   const [initialBusPosition, setInitialBusPosition] = useState<LatLngExpression | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [rating, setRating] = useState(0);
   const router = useRouter();
 
@@ -349,34 +351,58 @@ export default function Status({ user }: { user: { email: string } }) {
           </Button>
         )}
       </div>
-      <div className="absolute bottom-32 left-2 z-10 flex h-14 w-14 flex-row items-center justify-center rounded-full bg-white">
-        <BackButton />
-      </div>
-      <CardFooter className="absolute bottom-0 left-0 right-0 z-10 mx-2 flex items-center justify-between rounded-t-xl bg-white p-6 shadow-lg">
-        <div className="flex flex-col items-start">
-          <span className="text-muted-foreground">{statusMessage}</span>
-          {!isBoarding && (timeRemaining > 0 || showDestinationETA) && (
-            <div className="flex flex-row items-center gap-3">
-              <span className="text-3xl font-bold">{etaTime}</span>
-              <span className="flex flex-row items-center gap-1 text-muted-foreground">
-                <Clock size={15} />
-                {showDestinationETA ? destinationETA : timeRemaining} mins
-              </span>
-            </div>
-          )}
-          {isBoarding && (
-            <div className="flex flex-row items-center gap-3">
-              <span className="text-3xl font-bold">{etaTime}</span>
-              <span className="flex flex-row items-center gap-1 text-muted-foreground">
-                <Clock size={15} />
-                {boardingTimeDisplay} min
-              </span>
-            </div>
-          )}
+
+      <CardFooter className="absolute bottom-0 left-0 right-0 z-10 mx-2 flex flex-col gap-4 p-0">
+        <div className="w-full">
+          <div className="h-14 w-14 rounded-full bg-white">
+            <BackButton />
+          </div>
         </div>
-        {!isBookingConfirmed && isBookingAllowed && (
-          <Button onClick={confirmBooking}>Confirm Booking</Button>
-        )}
+        <div className="flex w-full items-center justify-between rounded-t-xl bg-white p-6 shadow-lg">
+          <div className="flex flex-col items-start">
+            <span className="text-muted-foreground">{statusMessage}</span>
+            {!isBoarding && (timeRemaining > 0 || showDestinationETA) && (
+              <div className="flex flex-row items-center gap-3">
+                <span className="text-3xl font-bold">{etaTime}</span>
+                <span className="flex flex-row items-center gap-1 text-muted-foreground">
+                  <Clock size={15} />
+                  {showDestinationETA ? destinationETA : timeRemaining} mins
+                </span>
+              </div>
+            )}
+            {isBoarding && (
+              <div className="flex flex-row items-center gap-3">
+                <span className="text-3xl font-bold">{etaTime}</span>
+                <span className="flex flex-row items-center gap-1 text-muted-foreground">
+                  <Clock size={15} />
+                  {boardingTimeDisplay} min
+                </span>
+              </div>
+            )}
+          </div>
+          <div className="flex flex-col gap-2">
+            {!isBookingConfirmed && isBookingAllowed && (
+              <Button onClick={confirmBooking}>Confirm Booking</Button>
+            )}
+            {(showDestinationETA || isBoarding) && (
+              <Button onClick={() => setIsHelpOpen(true)}>
+                <AlertCircle size={20} /> Report Issue
+                <Drawer open={isHelpOpen} onOpenChange={setIsHelpOpen}>
+                  <DrawerContent className="mx-auto max-w-xl">
+                    <div className="p-4">
+                      <Help user={user} />
+                    </div>
+                  </DrawerContent>
+                </Drawer>
+              </Button>
+            )}
+            {isBookingConfirmed && !showDestinationETA && !isBoarding && (
+              <Button variant="destructive">
+                <X size={20} /> Cancel
+              </Button>
+            )}
+          </div>
+        </div>
       </CardFooter>
 
       <Drawer
