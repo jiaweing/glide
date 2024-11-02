@@ -14,7 +14,19 @@ export const metadata: Metadata = {
     template: `%s | ${APP_TITLE}`,
   },
   description: "Acme - Simple auth with lucia and trpc",
-  icons: [{ rel: "icon", url: "/icon.png" }],
+  manifest: "/manifest.json",
+  icons: [
+    { rel: "icon", url: "/icon.png" },
+    { rel: "apple-touch-icon", url: "/icons/icon-192x192.png" },
+  ],
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: APP_TITLE,
+  },
+  formatDetection: {
+    telephone: false,
+  },
 };
 
 export const viewport: Viewport = {
@@ -22,11 +34,24 @@ export const viewport: Viewport = {
     { media: "(prefers-color-scheme: light)", color: "white" },
     { media: "(prefers-color-scheme: dark)", color: "black" },
   ],
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <meta name="application-name" content={APP_TITLE} />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content={APP_TITLE} />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <link rel="manifest" href="/manifest.json" />
+      </head>
       <body className={cn("min-h-screen bg-muted font-sans antialiased", fontSans.variable)}>
         <ThemeProvider
           attribute="class"
