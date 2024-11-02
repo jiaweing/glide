@@ -48,16 +48,16 @@ export default function HomePage({ user }: { user: { email: string } }) {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [busLocations, setBusLocations] = useState<BusLocation[]>([]);
-  const [userLocation, setUserLocation] = useState<LatLngTuple | null>(null);
+  const [userLocation, setUserLocation] = useState<LatLngTuple | null>([1.4043, 103.9022]);
 
-  useEffect(() => {
-    if (typeof window !== "undefined" && "geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        const { latitude, longitude } = position.coords;
-        setUserLocation([latitude, longitude]);
-      });
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (typeof window !== "undefined" && "geolocation" in navigator) {
+  //     navigator.geolocation.getCurrentPosition((position) => {
+  //       const { latitude, longitude } = position.coords;
+  //       setUserLocation([latitude, longitude]);
+  //     });
+  //   }
+  // }, []);
 
   useEffect(() => {
     if (userLocation) {
