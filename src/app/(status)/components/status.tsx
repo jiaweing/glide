@@ -1,5 +1,6 @@
 "use client";
 
+import { BackButton } from "@/app/(example)/_components/back-button";
 import { Button } from "@/components/ui/button";
 import { CardFooter } from "@/components/ui/card";
 import {
@@ -11,9 +12,10 @@ import {
 } from "@/components/ui/select";
 import { Icon, type LatLngExpression, type LeafletMouseEvent } from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { ArrowUpDown, MapPin } from "lucide-react";
+import { ArrowUpDown, Clock, MapPin } from "lucide-react";
 import { useEffect, useState } from "react";
 import { MapContainer, Marker, Polyline, TileLayer, useMapEvents } from "react-leaflet";
+import { toast } from "sonner";
 
 interface Location {
   name: string;
@@ -89,7 +91,7 @@ export default function Status({ user }: { user: { email: string } }) {
   const [isBookingConfirmed, setIsBookingConfirmed] = useState(false);
   const [busPosition, setBusPosition] = useState<LatLngExpression | null>(null);
   const [timeRemaining, setTimeRemaining] = useState(9);
-  const [statusMessage, setStatusMessage] = useState("Nearest bus will arrive in");
+  const [statusMessage, setStatusMessage] = useState("Nearest bus will arrive at");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isBoarding, setIsBoarding] = useState(false);
   const [showDestinationETA, setShowDestinationETA] = useState(false);
@@ -157,6 +159,7 @@ export default function Status({ user }: { user: { email: string } }) {
 
   const confirmBooking = () => {
     const randomStart = getRandomPosition();
+    toast("Booking confirmed! Your bus will arrive shortly.");
     setInitialBusPosition(randomStart);
     setBusPosition(randomStart);
     setIsBookingConfirmed(true);
@@ -186,7 +189,7 @@ export default function Status({ user }: { user: { email: string } }) {
         }
       } else {
         clearInterval(interval);
-        setStatusMessage("Your bus has arrived. The bus will depart in");
+        setStatusMessage("Your bus has arrived. The bus will depart at");
         setTimeRemaining(0);
         setIsBoarding(true);
       }
@@ -209,7 +212,7 @@ export default function Status({ user }: { user: { email: string } }) {
           clearInterval(boardingTimer);
           setIsBoarding(false);
           setShowDestinationETA(true);
-          setStatusMessage("You will arrive in");
+          setStatusMessage("You will arrive at");
           setBoardingTimeDisplay(0);
           // Start destination movement
           if (pickupPosition && dropoffPosition) {
@@ -241,7 +244,7 @@ export default function Status({ user }: { user: { email: string } }) {
                 setBusPosition([newLat, newLng]);
               } else {
                 clearInterval(destinationInterval);
-                setStatusMessage("You have arrived at your destination");
+                setStatusMessage("You have arrived, please alight by");
               }
             }, 1000);
           }
@@ -323,7 +326,7 @@ export default function Status({ user }: { user: { email: string } }) {
           </div>
         </div>
         {errorMessage && <div className="text-sm text-red-500">{errorMessage}</div>}
-        {!isBoarding && !showDestinationETA && (
+        {!isBoarding && !showDestinationETA && !isBookingConfirmed && (
           <Button
             onClick={swapLocations}
             disabled={!pickupPosition || !dropoffPosition}
@@ -334,22 +337,28 @@ export default function Status({ user }: { user: { email: string } }) {
           </Button>
         )}
       </div>
-
-      <CardFooter className="absolute bottom-0 left-0 right-0 z-10 m-2 flex items-center justify-between rounded-xl bg-white p-6">
+      <div className="absolute bottom-32 left-2 z-10 flex h-14 w-14 flex-row items-center justify-center rounded-full bg-white">
+        <BackButton />
+      </div>
+      <CardFooter className="absolute bottom-0 left-0 right-0 z-10 mx-2 flex items-center justify-between rounded-t-xl bg-white p-6 shadow-lg">
         <div className="flex flex-col items-start">
           <span className="text-muted-foreground">{statusMessage}</span>
           {!isBoarding && (timeRemaining > 0 || showDestinationETA) && (
-            <div className="flex flex-col">
-              <span className="text-3xl font-bold">
+            <div className="flex flex-row items-center gap-3">
+              <span className="text-3xl font-bold">{etaTime}</span>
+              <span className="flex flex-row items-center gap-1 text-muted-foreground">
+                <Clock size={15} />
                 {showDestinationETA ? destinationETA : timeRemaining} mins
               </span>
-              <span className="text-sm text-muted-foreground">{etaTime}</span>
             </div>
           )}
           {isBoarding && (
-            <div className="flex flex-col">
-              <span className="text-3xl font-bold">{boardingTimeDisplay} min</span>
-              <span className="text-sm text-muted-foreground">{etaTime}</span>
+            <div className="flex flex-row items-center gap-3">
+              <span className="text-3xl font-bold">{etaTime}</span>
+              <span className="flex flex-row items-center gap-1 text-muted-foreground">
+                <Clock size={15} />
+                {boardingTimeDisplay} min
+              </span>
             </div>
           )}
         </div>

@@ -1,7 +1,7 @@
 import "@/styles/globals.css";
 
 import { ThemeProvider } from "@/components/theme-provider";
-import { Toaster } from "@/components/ui/sonner";
+import { Toaster as Sonner } from "@/components/ui/sonner";
 import { APP_TITLE } from "@/lib/constants";
 import { fontSans } from "@/lib/fonts";
 import { cn } from "@/lib/utils";
@@ -34,8 +34,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           enableSystem
           disableTransitionOnChange
         >
+          <Sonner position="top-center" richColors visibleToasts={3} />
           <TRPCReactProvider>{children}</TRPCReactProvider>
-          <Toaster />
         </ThemeProvider>
       </body>
     </html>
