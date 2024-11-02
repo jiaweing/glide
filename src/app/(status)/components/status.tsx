@@ -3,6 +3,7 @@
 import { BackButton } from "@/app/(example)/_components/back-button";
 import { Button } from "@/components/ui/button";
 import { CardFooter } from "@/components/ui/card";
+import { Drawer, DrawerContent } from "@/components/ui/drawer";
 import {
   Select,
   SelectContent,
@@ -10,9 +11,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 import { Icon, type LatLngExpression, type LeafletMouseEvent } from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { ArrowUpDown, Clock, MapPin } from "lucide-react";
+import { ArrowUpDown, Clock, MapPin, Star, X } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { MapContainer, Marker, Polyline, TileLayer, useMapEvents } from "react-leaflet";
 import { toast } from "sonner";
@@ -99,6 +102,9 @@ export default function Status({ user }: { user: { email: string } }) {
   const [boardingTimeDisplay, setBoardingTimeDisplay] = useState(1);
   const [etaTime, setEtaTime] = useState<string>("");
   const [initialBusPosition, setInitialBusPosition] = useState<LatLngExpression | null>(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [rating, setRating] = useState(0);
+  const router = useRouter();
 
   const updateETA = () => {
     const now = new Date();
@@ -190,6 +196,7 @@ export default function Status({ user }: { user: { email: string } }) {
       } else {
         clearInterval(interval);
         setStatusMessage("Your bus has arrived. The bus will depart at");
+        toast("Your bus has arrived. Please board the bus immediately.");
         setTimeRemaining(0);
         setIsBoarding(true);
       }
@@ -212,7 +219,7 @@ export default function Status({ user }: { user: { email: string } }) {
           clearInterval(boardingTimer);
           setIsBoarding(false);
           setShowDestinationETA(true);
-          setStatusMessage("You will arrive at");
+          setStatusMessage("You will arrive at" + " " + dropoffLocation);
           setBoardingTimeDisplay(0);
           // Start destination movement
           if (pickupPosition && dropoffPosition) {
@@ -245,6 +252,11 @@ export default function Status({ user }: { user: { email: string } }) {
               } else {
                 clearInterval(destinationInterval);
                 setStatusMessage("You have arrived, please alight by");
+                toast("You have arrived at your destination. Please alight.");
+                // Show completion drawer after 5 seconds
+                setTimeout(() => {
+                  setIsDrawerOpen(true);
+                }, 5000);
               }
             }, 1000);
           }
@@ -366,6 +378,67 @@ export default function Status({ user }: { user: { email: string } }) {
           <Button onClick={confirmBooking}>Confirm Booking</Button>
         )}
       </CardFooter>
+
+      <Drawer
+        open={isDrawerOpen}
+        onOpenChange={(state: boolean) => {
+          setIsDrawerOpen(state);
+          if (!state) {
+            router.push("/");
+          }
+        }}
+      >
+        <DrawerContent className="mx-auto max-w-xl">
+          <div className="relative flex h-full flex-col items-center justify-center p-6">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute right-2 top-2"
+              onClick={() => router.push("/")}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-500">
+              <svg
+                className="h-6 w-6 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+            </div>
+            <h3 className="mb-6 text-xl font-semibold">Your ride has been completed</h3>
+            <p className="mb-4 text-muted-foreground">How was the experience?</p>
+            <div className="flex gap-1">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <Button
+                  key={star}
+                  variant="ghost"
+                  size="icon"
+                  className="hover:text-yellow-400"
+                  onClick={() => {
+                    setRating(star);
+                    setTimeout(() => setIsDrawerOpen(false), 500);
+                  }}
+                >
+                  <Star
+                    className={cn(
+                      "h-6 w-6",
+                      star <= rating ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground",
+                    )}
+                  />
+                </Button>
+              ))}
+            </div>
+          </div>
+        </DrawerContent>
+      </Drawer>
     </div>
   );
 }
