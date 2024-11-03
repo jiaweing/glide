@@ -4,11 +4,29 @@ import Cookies from "js-cookie";
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 
+function isStandalone() {
+  return (
+    window.matchMedia("(display-mode: standalone)").matches ||
+    (window.navigator as any).standalone ||
+    document.referrer.includes("android-app://")
+  );
+}
+
+function isMobile() {
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}
+
 export function PWAInstallPrompt() {
   const [showPrompt, setShowPrompt] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
 
   useEffect(() => {
+    // Don't show if already installed
+    if (isStandalone()) return;
+
+    // Don't show on desktop
+    if (!isMobile()) return;
+
     // Check if user has already seen the prompt
     const hasSeenPrompt = Cookies.get("pwa-prompt-seen");
     if (hasSeenPrompt) return;
@@ -24,12 +42,26 @@ export function PWAInstallPrompt() {
 
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
 
+    // Also check if it's iOS
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    if (isIOS && !isStandalone()) {
+      // Show iOS-specific install prompt
+      setShowPrompt(true);
+    }
+
     return () => {
       window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
     };
   }, []);
 
   const handleInstallClick = async () => {
+    // If it's iOS, just close the prompt as we can't programmatically install
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    if (isIOS) {
+      handleDismiss();
+      return;
+    }
+
     if (!deferredPrompt) return;
 
     // Show the install prompt
@@ -56,27 +88,32 @@ export function PWAInstallPrompt() {
 
   if (!showPrompt) return null;
 
+  // Check if it's iOS to show different instructions
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  const installText = isIOS
+    ? "To install, tap the share button below and select 'Add to Home Screen'"
+    : "Install our app for a better experience. You can access it anytime from your home screen.";
+
   return (
     <div className="fixed bottom-4 left-4 right-4 z-50 rounded-lg bg-white p-4 shadow-lg dark:bg-gray-800 md:left-auto md:right-4 md:w-96">
       <div className="flex items-start justify-between">
         <div className="flex-1">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Install App</h3>
-          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-            Install our app for a better experience. You can access it anytime from your home
-            screen.
-          </p>
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{installText}</p>
           <div className="mt-4 flex space-x-4">
-            <button
-              onClick={handleInstallClick}
-              className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/80 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-            >
-              Install
-            </button>
+            {!isIOS && (
+              <button
+                onClick={handleInstallClick}
+                className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              >
+                Install
+              </button>
+            )}
             <button
               onClick={handleDismiss}
               className="rounded-md bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
             >
-              Maybe Later
+              {isIOS ? "Got it" : "Maybe Later"}
             </button>
           </div>
         </div>
