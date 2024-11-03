@@ -70,7 +70,7 @@ export function Chat({ user }: { user: { email: string } }) {
   }, [messages]);
 
   useEffect(() => {
-    if (messageCount === 1) {
+    if (messageCount === 3) {
       setIsDrawerOpen(true);
       setIsChatEnded(true);
     }
