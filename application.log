@@ -1,0 +1,7 @@
+[2024-10-24T09:44:55.038Z] [INFO] 📨 Email sent to: hey@jiaweing.com with template: EmailVerification and props: {"code":"49170171"}
+[2024-10-24T09:47:42.814Z] [INFO] 📨 Email sent to: hey@jiaweing.com with template: EmailVerification and props: {"code":"21811112"}
+[2024-10-24T09:49:26.883Z] [INFO] 📨 Email sent to: hey@jiaweing.com with template: EmailVerification and props: {"code":"55012045"}
+[2024-10-24T09:49:37.765Z] [INFO] 📨 Email sent to: hey@jiaweing.com with template: EmailVerification and props: {"code":"09060849"}
+[2024-10-28T07:52:44.803Z] [INFO] 📨 Email sent to: reach.jiawei@gmail.com with template: EmailVerification and props: {"code":"87377561"}
+[2024-10-29T09:29:34.523Z] [INFO] 📨 Email sent to: bunny@paoverse.com with template: EmailVerification and props: {"code":"24624104"}
+[2024-11-03T03:50:04.709Z] [INFO] 📨 Email sent to: reach.jiawei@gmail.com with template: PasswordReset and props: {"link":"http://localhost:3000/reset-password/5nvm8r2phak118zazjjogof0p48kbmebfadk07ga"}
