@@ -1,4 +1,4 @@
-import { UserDropdown } from "@/app/(example)/_components/user-dropdown";
+import { UserDropdown } from "@/app/(home)/_components/user-dropdown";
 import { validateRequest } from "@/lib/auth/validate-request";
 import { BackButton } from "./back-button";
 

@@ -57,18 +57,16 @@ export function Signup() {
             </p>
           ) : null}
           <div>
-            <Link href={"/login"}>
-              <span className="p-0 text-xs font-medium underline-offset-4 hover:underline">
-                I want to login instead
-              </span>
-            </Link>
+            <Button variant={"link"} size={"sm"} className="p-0" asChild>
+              <Link href={"/login"}>I want to login instead</Link>
+            </Button>
           </div>
 
           <SubmitButton className="w-full" aria-label="submit-btn">
             Sign Up
           </SubmitButton>
           <Button variant="outline" className="w-full" asChild>
-            <Link href="/">Cancel</Link>
+            <Link href="/login">Cancel</Link>
           </Button>
         </form>
       </CardContent>

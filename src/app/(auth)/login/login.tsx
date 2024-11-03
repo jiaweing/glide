@@ -69,9 +69,9 @@ export function Login() {
           <SubmitButton className="w-full" aria-label="submit-btn">
             Log In
           </SubmitButton>
-          <Button variant="outline" className="w-full" asChild>
+          {/* <Button variant="outline" className="w-full" asChild>
             <Link href="/">Cancel</Link>
-          </Button>
+          </Button> */}
         </form>
       </CardContent>
     </div>

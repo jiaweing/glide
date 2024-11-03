@@ -35,7 +35,7 @@ export function SendResetEmail() {
         <Label>Your Email</Label>
         <Input
           required
-          placeholder="email@example.com"
+          placeholder="2301008@sit.singaporetech.edu.sg"
           autoComplete="email"
           name="email"
           type="email"

@@ -1,6 +1,6 @@
 "use client";
 
-import { BackButton } from "@/app/(example)/_components/back-button";
+import { BackButton } from "@/app/(home)/_components/back-button";
 import { Help } from "@/app/(home)/_components/help";
 import {
   AlertDialog,

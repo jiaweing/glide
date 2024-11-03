@@ -17,7 +17,7 @@ export default async function ForgotPasswordPage() {
   return (
     <div className="w-full">
       <CardHeader>
-        <CardTitle>Forgot password?</CardTitle>
+        <CardTitle>Forgot Password?</CardTitle>
         <CardDescription>Password reset link will be sent to your email</CardDescription>
       </CardHeader>
       <CardContent>

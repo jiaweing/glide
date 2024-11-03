@@ -91,7 +91,7 @@ export async function signup(_: any, formData: FormData): Promise<ActionResponse
 
   if (existingUser) {
     return {
-      formError: "Cannot create account with that email",
+      formError: "An account already exists with that email address",
     };
   }
 
@@ -190,14 +190,14 @@ export async function sendPasswordResetLink(
   const email = formData.get("email");
   const parsed = z.string().trim().email().safeParse(email);
   if (!parsed.success) {
-    return { error: "Provided email is invalid." };
+    return { error: "The account does not exist." };
   }
   try {
     const user = await db.query.users.findFirst({
       where: (table, { eq }) => eq(table.email, parsed.data),
     });
 
-    if (!user || !user.emailVerified) return { error: "Provided email is invalid." };
+    if (!user) return { error: "The account does not exist." };
 
     const verificationToken = await generatePasswordResetToken(user.id);
 
