@@ -1,5 +1,6 @@
 import "@/styles/globals.css";
 
+import { PWAInstallPrompt } from "@/components/pwa-install-prompt";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { APP_TITLE } from "@/lib/constants";
@@ -61,7 +62,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           disableTransitionOnChange
         >
           <Sonner position="top-center" richColors visibleToasts={3} />
-          <TRPCReactProvider>{children}</TRPCReactProvider>
+          <TRPCReactProvider>
+            {children}
+            <PWAInstallPrompt />
+          </TRPCReactProvider>
         </ThemeProvider>
       </body>
     </html>
