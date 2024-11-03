@@ -27,7 +27,7 @@ import { Icon, type LatLngExpression, type LeafletMouseEvent } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { AlertCircle, ArrowUpDown, Clock, MapPin, Star, X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MapContainer, Marker, Polyline, TileLayer, useMapEvents } from "react-leaflet";
 import { toast } from "sonner";
 
@@ -119,6 +119,7 @@ export default function Status({ user }: { user: { email: string } }) {
   const [hasChangedDropoff, setHasChangedDropoff] = useState(false);
   const [showChangeAlert, setShowChangeAlert] = useState(false);
   const [pendingDropoffChange, setPendingDropoffChange] = useState<string | null>(null);
+  const destinationIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const router = useRouter();
 
   const updateETA = () => {
@@ -153,7 +154,7 @@ export default function Status({ user }: { user: { email: string } }) {
     const newPosition: LatLngExpression = { lat: location.lat, lng: location.lng };
 
     if (type === "pickup") {
-      if (dropoffPosition && JSON.stringify(newPosition) === JSON.stringify(dropoffPosition)) {
+      if (value === dropoffLocation) {
         setErrorMessage("Pickup and dropoff locations cannot be the same");
         return;
       }
@@ -161,7 +162,7 @@ export default function Status({ user }: { user: { email: string } }) {
       setPickupLocation(value);
       setErrorMessage(null);
     } else {
-      if (pickupPosition && JSON.stringify(newPosition) === JSON.stringify(pickupPosition)) {
+      if (value === pickupLocation) {
         setErrorMessage("Pickup and dropoff locations cannot be the same");
         return;
       }
@@ -182,6 +183,41 @@ export default function Status({ user }: { user: { email: string } }) {
     }
   };
 
+  const startDestinationMovement = (startPos: LatLngExpression, endPos: LatLngExpression) => {
+    // Clear any existing interval
+    if (destinationIntervalRef.current) {
+      clearInterval(destinationIntervalRef.current);
+    }
+
+    let currentETA = 15; // Reset ETA for new destination
+    setDestinationETA(currentETA);
+
+    const startLat = Array.isArray(startPos) ? startPos[0] : startPos.lat;
+    const startLng = Array.isArray(startPos) ? startPos[1] : startPos.lng;
+    const endLat = Array.isArray(endPos) ? endPos[0] : endPos.lat;
+    const endLng = Array.isArray(endPos) ? endPos[1] : endPos.lng;
+
+    destinationIntervalRef.current = setInterval(() => {
+      if (currentETA > 0) {
+        currentETA--;
+        setDestinationETA(currentETA);
+        const progress = 1 - currentETA / 15;
+        const newLat = startLat + (endLat - startLat) * progress;
+        const newLng = startLng + (endLng - startLng) * progress;
+        setBusPosition([newLat, newLng]);
+      } else {
+        if (destinationIntervalRef.current) {
+          clearInterval(destinationIntervalRef.current);
+        }
+        setStatusMessage("You have arrived, please alight by");
+        toast("You have arrived at your destination. Please alight.");
+        setTimeout(() => {
+          setIsDrawerOpen(true);
+        }, 5000);
+      }
+    }, 1000);
+  };
+
   const confirmDropoffChange = () => {
     if (!pendingDropoffChange) return;
 
@@ -198,9 +234,9 @@ export default function Status({ user }: { user: { email: string } }) {
 
     // Update simulation if in progress
     if (showDestinationETA && busPosition) {
-      // Reset ETA based on new dropoff location
-      setDestinationETA(15);
       setStatusMessage("You will arrive at " + pendingDropoffChange);
+      // Start new movement simulation from current bus position to new dropoff
+      startDestinationMovement(busPosition, newPosition);
     }
   };
 
@@ -273,42 +309,7 @@ export default function Status({ user }: { user: { email: string } }) {
           setBoardingTimeDisplay(0);
           // Start destination movement
           if (pickupPosition && dropoffPosition) {
-            const startLat =
-              typeof pickupPosition === "object" && "lat" in pickupPosition
-                ? pickupPosition.lat
-                : 0;
-            const startLng =
-              typeof pickupPosition === "object" && "lng" in pickupPosition
-                ? pickupPosition.lng
-                : 0;
-            const endLat =
-              typeof dropoffPosition === "object" && "lat" in dropoffPosition
-                ? dropoffPosition.lat
-                : 0;
-            const endLng =
-              typeof dropoffPosition === "object" && "lng" in dropoffPosition
-                ? dropoffPosition.lng
-                : 0;
-
-            let currentETA = destinationETA;
-            const destinationInterval = setInterval(() => {
-              if (currentETA > 0) {
-                currentETA--;
-                setDestinationETA(currentETA);
-                const progress = 1 - currentETA / 15;
-                const newLat = startLat + (endLat - startLat) * progress;
-                const newLng = startLng + (endLng - startLng) * progress;
-                setBusPosition([newLat, newLng]);
-              } else {
-                clearInterval(destinationInterval);
-                setStatusMessage("You have arrived, please alight by");
-                toast("You have arrived at your destination. Please alight.");
-                // Show completion drawer after 5 seconds
-                setTimeout(() => {
-                  setIsDrawerOpen(true);
-                }, 5000);
-              }
-            }, 1000);
+            startDestinationMovement(pickupPosition, dropoffPosition);
           }
         } else {
           setBoardingTimeDisplay(displayTimeLeft);
@@ -317,12 +318,18 @@ export default function Status({ user }: { user: { email: string } }) {
 
       return () => clearInterval(boardingTimer);
     }
-  }, [isBoarding, pickupPosition, dropoffPosition, destinationETA]);
+  }, [isBoarding, pickupPosition, dropoffPosition]);
 
-  const isBookingAllowed =
-    pickupPosition &&
-    dropoffPosition &&
-    JSON.stringify(pickupPosition) !== JSON.stringify(dropoffPosition);
+  // Cleanup intervals on unmount
+  useEffect(() => {
+    return () => {
+      if (destinationIntervalRef.current) {
+        clearInterval(destinationIntervalRef.current);
+      }
+    };
+  }, []);
+
+  const isBookingAllowed = pickupPosition && dropoffPosition && pickupLocation !== dropoffLocation;
 
   return (
     <div className="relative h-screen w-full">

@@ -120,21 +120,21 @@ export default function Home({ user }: { user: { email: string } }) {
             </div>
 
             <div className="flex space-x-2">
-              <Button variant="outline" size="sm">
-                <Link href="/pickup">
+              <Link href="/pickup">
+                <Button variant="outline" size="sm">
                   <Star className="text-yellow-400" /> E4
-                </Link>
-              </Button>
-              <Button variant="outline" size="sm">
-                <Link href="/pickup">
+                </Button>
+              </Link>
+              <Link href="/pickup">
+                <Button variant="outline" size="sm">
                   <Star className="text-yellow-400" /> E6
-                </Link>
-              </Button>
-              <Button variant="outline" size="sm">
-                <Link href="/pickup">
+                </Button>
+              </Link>
+              <Link href="/pickup">
+                <Button variant="outline" size="sm">
                   <Star className="text-yellow-400" /> Punggol Int
-                </Link>
-              </Button>
+                </Button>
+              </Link>
             </div>
           </div>
 
