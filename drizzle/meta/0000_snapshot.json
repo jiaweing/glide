@@ -1,11 +1,11 @@
 {
-  "id": "8c34654e-1214-407b-a39b-6d39df57478a",
+  "id": "aff6011b-3fd0-4b08-b170-e594d6625a3e",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.hci_email_verification_codes": {
-      "name": "hci_email_verification_codes",
+    "public.glide_email_verification_codes": {
+      "name": "glide_email_verification_codes",
       "schema": "",
       "columns": {
         "id": {
@@ -74,8 +74,8 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "hci_email_verification_codes_user_id_unique": {
-          "name": "hci_email_verification_codes_user_id_unique",
+        "glide_email_verification_codes_user_id_unique": {
+          "name": "glide_email_verification_codes_user_id_unique",
           "nullsNotDistinct": false,
           "columns": [
             "user_id"
@@ -83,8 +83,8 @@
         }
       }
     },
-    "public.hci_password_reset_tokens": {
-      "name": "hci_password_reset_tokens",
+    "public.glide_password_reset_tokens": {
+      "name": "glide_password_reset_tokens",
       "schema": "",
       "columns": {
         "id": {
@@ -127,8 +127,8 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "public.hci_posts": {
-      "name": "hci_posts",
+    "public.glide_posts": {
+      "name": "glide_posts",
       "schema": "",
       "columns": {
         "id": {
@@ -224,8 +224,8 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "public.hci_sessions": {
-      "name": "hci_sessions",
+    "public.glide_sessions": {
+      "name": "glide_sessions",
       "schema": "",
       "columns": {
         "id": {
@@ -268,8 +268,8 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "public.hci_users": {
-      "name": "hci_users",
+    "public.glide_users": {
+      "name": "glide_users",
       "schema": "",
       "columns": {
         "id": {
@@ -382,15 +382,15 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "hci_users_discord_id_unique": {
-          "name": "hci_users_discord_id_unique",
+        "glide_users_discord_id_unique": {
+          "name": "glide_users_discord_id_unique",
           "nullsNotDistinct": false,
           "columns": [
             "discord_id"
           ]
         },
-        "hci_users_email_unique": {
-          "name": "hci_users_email_unique",
+        "glide_users_email_unique": {
+          "name": "glide_users_email_unique",
           "nullsNotDistinct": false,
           "columns": [
             "email"

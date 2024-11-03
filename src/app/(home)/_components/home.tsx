@@ -40,7 +40,7 @@ const generateRandomBusPlate = (): string => {
   return `${randomLetters}${randomNumbers}`;
 };
 
-export default function HomePage({ user }: { user: { email: string } }) {
+export default function Home({ user }: { user: { email: string } }) {
   const [recentRoutes, setRecentRoutes] = useState<Route[]>([
     { pickup: "PUNGGOL INTERCHANGE", dropoff: "SIT PUNGGOL CAMPUS E2" },
     { pickup: "PUNGGOL INTERCHANGE", dropoff: "SIT PUNGGOL CAMPUS E6" },
@@ -121,13 +121,19 @@ export default function HomePage({ user }: { user: { email: string } }) {
 
             <div className="flex space-x-2">
               <Button variant="outline" size="sm">
-                <Star className="text-yellow-400" /> E4
+                <Link href="/pickup">
+                  <Star className="text-yellow-400" /> E4
+                </Link>
               </Button>
               <Button variant="outline" size="sm">
-                <Star className="text-yellow-400" /> E6
+                <Link href="/pickup">
+                  <Star className="text-yellow-400" /> E6
+                </Link>
               </Button>
               <Button variant="outline" size="sm">
-                <Star className="text-yellow-400" /> Punggol Int
+                <Link href="/pickup">
+                  <Star className="text-yellow-400" /> Punggol Int
+                </Link>
               </Button>
             </div>
           </div>
