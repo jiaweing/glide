@@ -13,20 +13,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { logout } from "@/lib/auth/actions";
 import { APP_TITLE } from "@/lib/constants";
+import { formatNameFromEmail } from "@/lib/utils";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
 
 export function Settings({ user }: { user: { email: string } }) {
-  const formatNameFromEmail = (email: string) => {
-    const namePart = email.split("@")[0];
-    return namePart
-      ?.split(".")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
-  };
-
   return (
     <div className="grid gap-8">
       <div>

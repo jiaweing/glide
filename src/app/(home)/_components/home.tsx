@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { APP_TITLE } from "@/lib/constants";
+import { formatNameFromEmail } from "@/lib/utils";
 import { type LatLngTuple } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { Clock, MapPin, Search, Star } from "lucide-react";
@@ -92,7 +93,7 @@ export default function Home({ user }: { user: { email: string } }) {
         <div className="space-y-6">
           <header className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-semibold">Welcome {user.email}</h1>
+              <h1 className="text-2xl font-semibold">Welcome {formatNameFromEmail(user.email)}</h1>
               <p className="text-muted-foreground">Book a shuttle bus with {APP_TITLE}</p>
             </div>
           </header>

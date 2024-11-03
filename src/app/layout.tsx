@@ -15,10 +15,11 @@ export const metadata: Metadata = {
   },
   description: "Acme - Simple auth with lucia and trpc",
   manifest: "/manifest.json",
-  icons: [
-    { rel: "icon", url: "/icon.png" },
-    { rel: "apple-touch-icon", url: "/icons/icon-192x192.png" },
-  ],
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon-16x16.png",
+    apple: "/apple-touch-icon.png",
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",

@@ -39,10 +39,7 @@ export function formatDate(
   }).format(new Date(date));
 }
 
-export function formatPrice(
-  price: number | string,
-  options: Intl.NumberFormatOptions = {},
-) {
+export function formatPrice(price: number | string, options: Intl.NumberFormatOptions = {}) {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: options.currency ?? "USD",
@@ -52,5 +49,13 @@ export function formatPrice(
 }
 
 export function absoluteUrl(path: string) {
-  return new URL(path, env.NEXT_PUBLIC_APP_URL).href
+  return new URL(path, env.NEXT_PUBLIC_APP_URL).href;
 }
+
+export const formatNameFromEmail = (email: string) => {
+  const namePart = email.split("@")[0];
+  return namePart
+    ?.split(".")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+};
