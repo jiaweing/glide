@@ -1,6 +1,6 @@
 export const APP_TITLE = "Glide";
-export const DATABASE_PREFIX = "hci";
-export const TEST_DB_PREFIX = "test_hci";
+export const DATABASE_PREFIX = "glide";
+export const TEST_DB_PREFIX = "test_glide";
 export const EMAIL_SENDER = '"Glide Team" <noreply@glide.app>';
 
 export enum Paths {
