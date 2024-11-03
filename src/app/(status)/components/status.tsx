@@ -43,7 +43,6 @@ const locations: Location[] = [
   { name: "SIT PUNGGOL CAMPUS E4", lat: 1.412, lng: 103.91 },
 ];
 
-// Define map boundaries for random bus starting position
 const MAP_BOUNDS = {
   minLat: 1.4,
   maxLat: 1.415,
@@ -119,8 +118,22 @@ export default function Status({ user }: { user: { email: string } }) {
   const [hasChangedDropoff, setHasChangedDropoff] = useState(false);
   const [showChangeAlert, setShowChangeAlert] = useState(false);
   const [pendingDropoffChange, setPendingDropoffChange] = useState<string | null>(null);
+  const [isCancelDrawerOpen, setIsCancelDrawerOpen] = useState(false);
+  const [showCancelWarning, setShowCancelWarning] = useState(false);
+  const [selectedReason, setSelectedReason] = useState<string | null>(null);
   const destinationIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const router = useRouter();
+
+  const cancelReasons = [
+    "Bus took too long",
+    "Change of plans",
+    "Wrong pickup location",
+    "Bus not moving",
+    "Unexpected emergency",
+    "Weather conditions",
+    "Could not board the bus",
+    "Missed it",
+  ];
 
   const updateETA = () => {
     const now = new Date();
@@ -184,12 +197,11 @@ export default function Status({ user }: { user: { email: string } }) {
   };
 
   const startDestinationMovement = (startPos: LatLngExpression, endPos: LatLngExpression) => {
-    // Clear any existing interval
     if (destinationIntervalRef.current) {
       clearInterval(destinationIntervalRef.current);
     }
 
-    let currentETA = 15; // Reset ETA for new destination
+    let currentETA = 15;
     setDestinationETA(currentETA);
 
     const startLat = Array.isArray(startPos) ? startPos[0] : startPos.lat;
@@ -232,10 +244,8 @@ export default function Status({ user }: { user: { email: string } }) {
     setPendingDropoffChange(null);
     toast.success("Dropoff location updated successfully");
 
-    // Update simulation if in progress
     if (showDestinationETA && busPosition) {
       setStatusMessage("You will arrive at " + pendingDropoffChange);
-      // Start new movement simulation from current bus position to new dropoff
       startDestinationMovement(busPosition, newPosition);
     }
   };
@@ -265,8 +275,6 @@ export default function Status({ user }: { user: { email: string } }) {
       if (currentTime > 0) {
         currentTime--;
         setTimeRemaining(currentTime);
-
-        // Update bus position from random start to pickup
         const progress = 1 - currentTime / 9;
         if (pickupPosition && Array.isArray(startPosition)) {
           const [startLat, startLng] = startPosition;
@@ -289,12 +297,11 @@ export default function Status({ user }: { user: { email: string } }) {
     }, 1000);
   };
 
-  // Handle boarding time (5 seconds but display as 1 minute countdown)
   useEffect(() => {
     if (isBoarding) {
       const startTime = Date.now();
-      const simulatedDuration = 5000; // 5 seconds
-      const displayDuration = 60000; // 1 minute
+      const simulatedDuration = 5000;
+      const displayDuration = 60000;
 
       const boardingTimer = setInterval(() => {
         const elapsed = Date.now() - startTime;
@@ -307,7 +314,6 @@ export default function Status({ user }: { user: { email: string } }) {
           setShowDestinationETA(true);
           setStatusMessage("You will arrive at" + " " + dropoffLocation);
           setBoardingTimeDisplay(0);
-          // Start destination movement
           if (pickupPosition && dropoffPosition) {
             startDestinationMovement(pickupPosition, dropoffPosition);
           }
@@ -320,7 +326,6 @@ export default function Status({ user }: { user: { email: string } }) {
     }
   }, [isBoarding, pickupPosition, dropoffPosition]);
 
-  // Cleanup intervals on unmount
   useEffect(() => {
     return () => {
       if (destinationIntervalRef.current) {
@@ -328,6 +333,22 @@ export default function Status({ user }: { user: { email: string } }) {
       }
     };
   }, []);
+
+  const handleCancelBooking = () => {
+    setIsCancelDrawerOpen(true);
+  };
+
+  const handleReasonSelect = (reason: string) => {
+    setSelectedReason(reason);
+    setIsCancelDrawerOpen(false);
+    setShowCancelWarning(true);
+  };
+
+  const confirmCancellation = () => {
+    setShowCancelWarning(false);
+    toast.success("Booking cancelled successfully");
+    router.push("/");
+  };
 
   const isBookingAllowed = pickupPosition && dropoffPosition && pickupLocation !== dropoffLocation;
 
@@ -445,7 +466,7 @@ export default function Status({ user }: { user: { email: string } }) {
                 <AlertCircle size={20} /> Report Issue
                 <Drawer open={isHelpOpen} onOpenChange={setIsHelpOpen}>
                   <DrawerContent className="mx-auto max-w-xl">
-                    <div className="p-4">
+                    <div className="p-6">
                       <Help user={user} />
                     </div>
                   </DrawerContent>
@@ -453,7 +474,7 @@ export default function Status({ user }: { user: { email: string } }) {
               </Button>
             )}
             {isBookingConfirmed && !showDestinationETA && !isBoarding && (
-              <Button variant="destructive">
+              <Button variant="destructive" onClick={handleCancelBooking}>
                 <X size={20} /> Cancel
               </Button>
             )}
@@ -480,6 +501,52 @@ export default function Status({ user }: { user: { email: string } }) {
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction onClick={confirmDropoffChange}>Continue</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <Drawer open={isCancelDrawerOpen} onOpenChange={setIsCancelDrawerOpen}>
+        <DrawerContent className="mx-auto max-w-xl">
+          <div className="p-6">
+            <h3 className="mb-4 text-lg font-semibold">Why do you want to cancel?</h3>
+            <div className="space-y-2">
+              {cancelReasons.map((reason) => (
+                <Button
+                  key={reason}
+                  variant="ghost"
+                  className="w-full justify-start"
+                  onClick={() => handleReasonSelect(reason)}
+                >
+                  {reason}
+                </Button>
+              ))}
+            </div>
+          </div>
+        </DrawerContent>
+      </Drawer>
+
+      <AlertDialog open={showCancelWarning} onOpenChange={setShowCancelWarning}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure you want to cancel?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Penalties may apply if you abuse this feature. You may wish to change your pick-up or
+              drop-off locations instead.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setShowCancelWarning(false)}>No</AlertDialogCancel>
+            <Button
+              variant="default"
+              onClick={() => {
+                setShowCancelWarning(false);
+                setDropoffPosition(null);
+                setDropoffLocation(null);
+              }}
+            >
+              Change Location
+            </Button>
+            <AlertDialogAction onClick={confirmCancellation}>Yes</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
