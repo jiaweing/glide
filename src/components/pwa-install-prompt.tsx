@@ -12,8 +12,12 @@ function isStandalone() {
   );
 }
 
-function isMobile() {
-  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+function getPlatformInfo() {
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    navigator.userAgent,
+  );
+  return { isIOS, isMobile };
 }
 
 export function PWAInstallPrompt() {
@@ -23,9 +27,6 @@ export function PWAInstallPrompt() {
   useEffect(() => {
     // Don't show if already installed
     if (isStandalone()) return;
-
-    // Don't show on desktop
-    if (!isMobile()) return;
 
     // Check if user has already seen the prompt
     const hasSeenPrompt = Cookies.get("pwa-prompt-seen");
@@ -42,8 +43,8 @@ export function PWAInstallPrompt() {
 
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
 
-    // Also check if it's iOS
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    // Check if it's iOS
+    const { isIOS } = getPlatformInfo();
     if (isIOS && !isStandalone()) {
       // Show iOS-specific install prompt
       setShowPrompt(true);
@@ -56,7 +57,7 @@ export function PWAInstallPrompt() {
 
   const handleInstallClick = async () => {
     // If it's iOS, just close the prompt as we can't programmatically install
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    const { isIOS } = getPlatformInfo();
     if (isIOS) {
       handleDismiss();
       return;
@@ -88,11 +89,17 @@ export function PWAInstallPrompt() {
 
   if (!showPrompt) return null;
 
-  // Check if it's iOS to show different instructions
-  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-  const installText = isIOS
-    ? "To install, tap the share button below and select 'Add to Home Screen'"
-    : "Install our app for a better experience. You can access it anytime from your home screen.";
+  const { isIOS, isMobile } = getPlatformInfo();
+
+  // Customize the message based on platform
+  let installText =
+    "Install our app for a better experience. You can access it anytime from your home screen.";
+  if (isIOS) {
+    installText = "To install, tap the share button below and select 'Add to Home Screen'";
+  } else if (!isMobile) {
+    installText =
+      "Install our app for quick access and a better experience. Click Install to add it to your browser.";
+  }
 
   return (
     <div className="fixed bottom-4 left-4 right-4 z-50 rounded-lg bg-white p-4 shadow-lg dark:bg-gray-800 md:left-auto md:right-4 md:w-96">
@@ -104,7 +111,7 @@ export function PWAInstallPrompt() {
             {!isIOS && (
               <button
                 onClick={handleInstallClick}
-                className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
               >
                 Install
               </button>
