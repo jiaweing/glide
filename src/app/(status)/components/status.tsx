@@ -26,7 +26,7 @@ import { cn } from "@/lib/utils";
 import { Icon, type LatLngExpression, type LeafletMouseEvent } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { AlertCircle, ArrowUpDown, Clock, MapPin, Star, X } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { MapContainer, Marker, Polyline, TileLayer, useMapEvents } from "react-leaflet";
 import { toast } from "sonner";
@@ -41,6 +41,7 @@ const locations: Location[] = [
   { name: "PUNGGOL INTERCHANGE", lat: 1.4043, lng: 103.9022 },
   { name: "SIT PUNGGOL CAMPUS MAIN ENTRANCE", lat: 1.41, lng: 103.908 },
   { name: "SIT PUNGGOL CAMPUS E4", lat: 1.412, lng: 103.91 },
+  { name: "SIT PUNGGOL CAMPUS E6", lat: 1.415, lng: 103.91 },
 ];
 
 const MAP_BOUNDS = {
@@ -97,6 +98,7 @@ function LocationMarker({ position, setPosition }: LocationMarkerProps) {
 }
 
 export default function Status({ user }: { user: { email: string } }) {
+  const searchParams = useSearchParams();
   const [pickupPosition, setPickupPosition] = useState<LatLngExpression | null>(null);
   const [dropoffPosition, setDropoffPosition] = useState<LatLngExpression | null>(null);
   const [pickupLocation, setPickupLocation] = useState<string | null>(null);
@@ -134,6 +136,18 @@ export default function Status({ user }: { user: { email: string } }) {
     "Could not board the bus",
     "Missed it",
   ];
+
+  useEffect(() => {
+    const pickup = searchParams.get("pickup");
+    const dropoff = searchParams.get("dropoff");
+
+    if (pickup) {
+      handleLocationSelect(pickup, "pickup");
+    }
+    if (dropoff) {
+      handleLocationSelect(dropoff, "dropoff");
+    }
+  }, [searchParams]);
 
   const updateETA = () => {
     const now = new Date();

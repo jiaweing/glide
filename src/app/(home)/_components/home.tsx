@@ -43,7 +43,7 @@ const generateRandomBusPlate = (): string => {
 
 export default function Home({ user }: { user: { email: string } }) {
   const [recentRoutes, setRecentRoutes] = useState<Route[]>([
-    { pickup: "PUNGGOL INTERCHANGE", dropoff: "SIT PUNGGOL CAMPUS E2" },
+    { pickup: "PUNGGOL INTERCHANGE", dropoff: "SIT PUNGGOL CAMPUS E4" },
     { pickup: "PUNGGOL INTERCHANGE", dropoff: "SIT PUNGGOL CAMPUS E6" },
     { pickup: "SIT PUNGGOL CAMPUS E6", dropoff: "PUNGGOL INTERCHANGE" },
   ]);
@@ -51,15 +51,6 @@ export default function Home({ user }: { user: { email: string } }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [busLocations, setBusLocations] = useState<BusLocation[]>([]);
   const [userLocation, setUserLocation] = useState<LatLngTuple | null>([1.4043, 103.9022]);
-
-  // useEffect(() => {
-  //   if (typeof window !== "undefined" && "geolocation" in navigator) {
-  //     navigator.geolocation.getCurrentPosition((position) => {
-  //       const { latitude, longitude } = position.coords;
-  //       setUserLocation([latitude, longitude]);
-  //     });
-  //   }
-  // }, []);
 
   useEffect(() => {
     if (userLocation) {
@@ -121,17 +112,17 @@ export default function Home({ user }: { user: { email: string } }) {
             </div>
 
             <div className="flex space-x-2">
-              <Link href="/pickup">
+              <Link href="/pickup?dropoff=SIT+PUNGGOL+CAMPUS+E4">
                 <Button variant="outline" size="sm">
                   <Star className="text-yellow-400" /> E4
                 </Button>
               </Link>
-              <Link href="/pickup">
+              <Link href="/pickup?dropoff=SIT+PUNGGOL+CAMPUS+E6">
                 <Button variant="outline" size="sm">
                   <Star className="text-yellow-400" /> E6
                 </Button>
               </Link>
-              <Link href="/pickup">
+              <Link href="/pickup?dropoff=PUNGGOL+INTERCHANGE">
                 <Button variant="outline" size="sm">
                   <Star className="text-yellow-400" /> Punggol Int
                 </Button>
@@ -142,7 +133,10 @@ export default function Home({ user }: { user: { email: string } }) {
           <div className="space-y-4">
             {filteredRoutes.map((route, index) => (
               <Card key={index}>
-                <Link href="/pickup" key={index}>
+                <Link
+                  href={`/pickup?pickup=${encodeURIComponent(route.pickup)}&dropoff=${encodeURIComponent(route.dropoff)}`}
+                  key={index}
+                >
                   <CardContent className="p-4">
                     <div className="flex items-start space-x-4">
                       <Clock className="mt-1 h-5 w-5 text-muted-foreground" />

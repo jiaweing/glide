@@ -21,24 +21,19 @@ export function Help({ user }: { user: { email: string } }) {
         "To book a shuttle, open the app, enter your pickup and drop-off locations, select your preferred time, and confirm your booking. The app will assign you to the nearest available autonomous shuttle.",
     },
     {
-      question: "What if the shuttle is late?",
+      question: "Can I change my dropoff destination?",
       answer:
-        "Our autonomous shuttles are designed to be punctual. However, if there's a delay due to unforeseen circumstances, you'll receive a notification in the app with an updated arrival time. You can also track your shuttle in real-time within the app.",
+        "Yes, you can change your dropoff destination before the shuttle arrives. Tap on the destination on the booking screen and enter your new dropoff location. Please note that you can only change the dropoff destination once.",
     },
     {
       question: "How do I cancel a booking?",
       answer:
-        "To cancel a booking, go to 'My Trips' in the app, select the booking you wish to cancel, and tap on 'Cancel Booking'. Please note that cancellations made less than 5 minutes before the scheduled pickup may incur a small fee.",
+        "To cancel a booking, tap on 'Cancel Booking' on a booking screen. Please note that you can only cancel before the bus arrives.",
     },
     {
       question: "Is it safe to ride in an autonomous shuttle?",
       answer:
         "Yes, our autonomous shuttles are equipped with advanced safety features and undergo regular maintenance. They use state-of-the-art sensors and AI to navigate safely. In the rare event of an issue, our remote monitoring team can take control of the vehicle.",
-    },
-    {
-      question: "What if I leave something in the shuttle?",
-      answer:
-        "If you've left an item in the shuttle, please report it immediately through the 'Lost & Found' section in the app. Provide details about the item and your trip. Our team will check the shuttle and contact you if the item is found.",
     },
   ];
 
