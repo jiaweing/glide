@@ -44,14 +44,14 @@ export function Settings({ user }: { user: { email: string } }) {
             <nav className="space-y-1">
               <Link
                 href="#"
-                className="flex items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors hover:bg-muted"
+                className="disabled flex cursor-not-allowed items-center justify-between rounded-lg px-3 py-2 text-sm opacity-50 transition-colors hover:bg-muted"
               >
                 Previous Activities
                 <ChevronRight className="h-4 w-4 text-muted-foreground" />
               </Link>
               <Link
                 href="#"
-                className="flex items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors hover:bg-muted"
+                className="disabled flex cursor-not-allowed items-center justify-between rounded-lg px-3 py-2 text-sm opacity-50 transition-colors hover:bg-muted"
               >
                 Favourite Locations
                 <ChevronRight className="h-4 w-4 text-muted-foreground" />
@@ -65,7 +65,7 @@ export function Settings({ user }: { user: { email: string } }) {
               </Link>
               <Link
                 href="#"
-                className="flex items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors hover:bg-muted"
+                className="disabled flex cursor-not-allowed items-center justify-between rounded-lg px-3 py-2 text-sm opacity-50 transition-colors hover:bg-muted"
               >
                 Manage Account
                 <ChevronRight className="h-4 w-4 text-muted-foreground" />
