@@ -4,20 +4,25 @@ import Cookies from "js-cookie";
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 
+function getPlatformInfo() {
+  const isIOS =
+    /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  const isMobile =
+    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+    "standalone" in navigator ||
+    window.matchMedia("(display-mode: standalone)").matches;
+  return { isIOS, isMobile };
+}
+
 function isStandalone() {
   return (
     window.matchMedia("(display-mode: standalone)").matches ||
     (window.navigator as any).standalone ||
-    document.referrer.includes("android-app://")
+    document.referrer.includes("android-app://") ||
+    window.location.href.includes("?mode=pwa") ||
+    window.location.href.includes("?homescreen=1")
   );
-}
-
-function getPlatformInfo() {
-  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-    navigator.userAgent,
-  );
-  return { isIOS, isMobile };
 }
 
 export function PWAInstallPrompt() {
@@ -98,7 +103,7 @@ export function PWAInstallPrompt() {
     installText = "To install, tap the share button below and select 'Add to Home Screen'";
   } else if (!isMobile) {
     installText =
-      "Install our app for quick access and a better experience. Click Install to add it to your browser.";
+      "Install our app for quick access and a better experience. Click Install to add it to your home screen.";
   }
 
   return (
