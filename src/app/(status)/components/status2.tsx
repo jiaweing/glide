@@ -15,20 +15,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { CardFooter } from "@/components/ui/card";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { Icon, type LatLngExpression, type LeafletMouseEvent } from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { AlertCircle, ArrowUpDown, Clock, MapPin, Star, X } from "lucide-react";
+import { AlertCircle, Clock, Star, X } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { MapContainer, Marker, Polyline, Popup, TileLayer, Tooltip, useMapEvents } from "react-leaflet";
+import { MapContainer, Marker, Polyline, TileLayer, Tooltip, useMapEvents } from "react-leaflet";
 import { toast } from "sonner";
 
 interface Location {
@@ -385,6 +378,20 @@ export default function Status2({ user }: { user: { email: string } }) {
           style={{ height: "100%", width: "100%" }}
         >
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+          {pickupPosition && pickupLocation && (
+            <Marker position={pickupPosition} icon={pickupIcon}>
+              <Tooltip permanent={true} direction="top" offset={[0, -20]}>
+                Pickup - {pickupLocation}
+              </Tooltip>
+            </Marker>
+          )}
+          {dropoffPosition && dropoffLocation && (
+            <Marker position={dropoffPosition} icon={dropoffIcon}>
+              <Tooltip permanent={true} direction="top" offset={[0, -20]}>
+                Destination - {dropoffLocation}
+              </Tooltip>
+            </Marker>
+          )}
           {locations.map((location) => {
             const isPickup = pickupLocation === location.name;
             const isDropoff = dropoffLocation === location.name;
@@ -418,7 +425,7 @@ export default function Status2({ user }: { user: { email: string } }) {
                         }
                       }
                     }
-                  }
+                  },
                 }}
               >
                 <Tooltip permanent={false} direction="top">
@@ -434,7 +441,7 @@ export default function Status2({ user }: { user: { email: string } }) {
         </MapContainer>
       </div>
 
-      <div className="absolute left-0 right-0 top-0 z-10 m-2 space-y-4 rounded-xl bg-white p-4">
+      {/* <div className="absolute left-0 right-0 top-0 z-10 m-2 space-y-4 rounded-xl bg-white p-4">
         {!isBoarding && !showDestinationETA && (
           <div className="flex items-center space-x-2">
             <MapPin className="h-5 w-5 text-green-400" />
@@ -466,7 +473,7 @@ export default function Status2({ user }: { user: { email: string } }) {
             Swap Locations
           </Button>
         )}
-      </div>
+      </div> */}
 
       <CardFooter className="absolute bottom-0 left-0 right-0 z-10 mx-2 flex flex-col gap-4 p-0">
         <div className="w-full">
