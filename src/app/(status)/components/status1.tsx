@@ -97,7 +97,7 @@ function LocationMarker({ position, setPosition }: LocationMarkerProps) {
   return position ? <Marker position={position} icon={pickupIcon} /> : null;
 }
 
-export default function Status1({ user }: { user: { email: string } }) {
+export default function Status({ user }: { user: { email: string } }) {
   const searchParams = useSearchParams();
   const [pickupPosition, setPickupPosition] = useState<LatLngExpression | null>(null);
   const [dropoffPosition, setDropoffPosition] = useState<LatLngExpression | null>(null);
@@ -368,17 +368,45 @@ export default function Status1({ user }: { user: { email: string } }) {
 
   return (
     <div className="relative h-screen w-full">
+      {/* <div className="absolute inset-0 z-0">
+        <MapContainer
+          center={[1.4043, 103.9022]}
+          zoom={13}
+          style={{ height: "100%", width: "100%" }}
+        >
+          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+          {pickupPosition && <Marker position={pickupPosition} icon={pickupIcon} />}
+          {dropoffPosition && <Marker position={dropoffPosition} icon={dropoffIcon} />}
+          {busPosition && <Marker position={busPosition} icon={busIcon} />}
+          {pickupPosition && dropoffPosition && (
+            <Polyline positions={[pickupPosition, dropoffPosition]} color="blue" />
+          )}
+        </MapContainer>
+      </div> */}
+
       <div className="absolute left-0 right-0 top-0 z-10 m-2 space-y-4 rounded-xl bg-white p-4">
         {!isBoarding && !showDestinationETA && (
           <div className="flex items-center space-x-2">
-            <Button
-              onClick={() => router.push("/pickup")}
-              className="flex w-full items-center space-x-2"
-              variant="outline"
-            >
-              <MapPin className="h-5 w-5 text-green-400" />
-              <span>Select Pickup & Dropoff Location</span>
-            </Button>
+            <MapPin className="h-5 w-5 text-green-400" />
+            <div className="flex w-full flex-col space-y-1">
+              <span className="text-xs text-muted-foreground">Pickup</span>
+              <Select
+                disabled={isBookingConfirmed}
+                onValueChange={(value: string) => handleLocationSelect(value, "pickup")}
+                value={pickupLocation ?? undefined}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select Pickup" />
+                </SelectTrigger>
+                <SelectContent>
+                  {locations.map((location) => (
+                    <SelectItem key={location.name} value={location.name}>
+                      {location.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         )}
         <div className="flex items-center space-x-2">
