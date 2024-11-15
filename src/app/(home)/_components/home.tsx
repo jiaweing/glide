@@ -2,7 +2,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { APP_TITLE } from "@/lib/constants";
 import { formatNameFromEmail } from "@/lib/utils";
 import { type LatLngTuple } from "leaflet";
@@ -10,6 +9,7 @@ import "leaflet/dist/leaflet.css";
 import { Clock, MapPin, Search, Star } from "lucide-react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
 interface Route {
@@ -51,6 +51,7 @@ export default function Home({ user }: { user: { email: string } }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [busLocations, setBusLocations] = useState<BusLocation[]>([]);
   const [userLocation, setUserLocation] = useState<LatLngTuple | null>([1.4043, 103.9022]);
+  const router = useRouter();
 
   useEffect(() => {
     if (userLocation) {
@@ -101,14 +102,14 @@ export default function Home({ user }: { user: { email: string } }) {
 
           <div className="space-y-4">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 transform text-muted-foreground" />
-              <Input
-                type="text"
-                placeholder="Search Destinations"
-                className="pl-10"
-                value={searchQuery}
-                onChange={handleSearch}
-              />
+              <Button
+                onClick={() => router.push("/pickup")}
+                className="flex w-full items-center space-x-2"
+                variant="outline"
+              >
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 transform text-muted-foreground" />
+                <span>Search Destinations</span>
+              </Button>
             </div>
 
             <div className="flex space-x-2">

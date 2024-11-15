@@ -1,7 +1,6 @@
 import "@/styles/globals.css";
 
 import { PWAInstallPrompt } from "@/components/pwa-install-prompt";
-import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { APP_TITLE } from "@/lib/constants";
 import { fontSans } from "@/lib/fonts";
@@ -55,18 +54,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="manifest" href="/manifest.json" />
       </head>
       <body className={cn("min-h-screen bg-muted font-sans antialiased", fontSans.variable)}>
-        <ThemeProvider
+        {/* <ThemeProvider
           attribute="class"
           defaultTheme="light"
           enableSystem
           disableTransitionOnChange
-        >
-          <Sonner position="top-center" richColors visibleToasts={3} />
-          <TRPCReactProvider>
-            {children}
-            <PWAInstallPrompt />
-          </TRPCReactProvider>
-        </ThemeProvider>
+        > */}
+        <Sonner position="top-center" richColors visibleToasts={3} />
+        <TRPCReactProvider>
+          {children}
+          <PWAInstallPrompt />
+        </TRPCReactProvider>
+        {/* </ThemeProvider> */}
       </body>
     </html>
   );
