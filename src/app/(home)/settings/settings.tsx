@@ -42,7 +42,7 @@ export function Settings({ user }: { user: { email: string } }) {
           <div className="space-y-4">
             <h2 className="text-lg font-semibold">Account</h2>
             <nav className="space-y-1">
-              <Link
+              {/* <Link
                 href="#"
                 className="disabled flex cursor-not-allowed items-center justify-between rounded-lg px-3 py-2 text-sm opacity-50 transition-colors hover:bg-muted"
               >
@@ -55,7 +55,7 @@ export function Settings({ user }: { user: { email: string } }) {
               >
                 Favourite Locations
                 <ChevronRight className="h-4 w-4 text-muted-foreground" />
-              </Link>
+              </Link> */}
               <Link
                 href="/help"
                 className="flex items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors hover:bg-muted"
@@ -63,13 +63,13 @@ export function Settings({ user }: { user: { email: string } }) {
                 Help Center (FAQ)
                 <ChevronRight className="h-4 w-4 text-muted-foreground" />
               </Link>
-              <Link
+              {/* <Link
                 href="#"
                 className="disabled flex cursor-not-allowed items-center justify-between rounded-lg px-3 py-2 text-sm opacity-50 transition-colors hover:bg-muted"
               >
                 Manage Account
                 <ChevronRight className="h-4 w-4 text-muted-foreground" />
-              </Link>
+              </Link> */}
               <SignoutConfirmation />
             </nav>
           </div>
